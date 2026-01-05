@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="sl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>George Ristov | Prodajalec, ki gradi tehnične rešitve</title>
+    <meta name="description" content="12 let self-taught tech, 6 let prodaje. Ne programiram - gradim rešitve z AI.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="nav-container">
+            <a href="#" class="nav-logo">George Ristov<span class="accent">.</span></a>
+            <div class="nav-links">
+                <a href="#zgodba" class="nav-link">Zgodba</a>
+                <a href="#projekti" class="nav-link">Projekti</a>
+                <a href="#pot" class="nav-link">Pot</a>
+                <a href="#kontakt" class="nav-link btn-nav">Kontakt</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-container">
+            <div class="hero-badge">
+                <span class="badge-dot"></span>
+                Odprt za nove priložnosti
+            </div>
+
+            <h1 class="hero-title">
+                Prodajalec, ki<br>
+                <span class="gradient-text">gradi tehnične rešitve.</span>
+            </h1>
+
+            <p class="hero-subtitle">
+                Ko mi nekdo z navdušenjem reče "a veš, kaj lahko narediš s tem?" – sem takoj notri.
+                Ta radovednost me vodi že 12 let. Od prodaje do tehnologije. In nazaj. In spet naprej.
+            </p>
+
+            <div class="hero-stats">
+                <div class="stat-item">
+                    <span class="stat-value">12</span>
+                    <span class="stat-label">let tech samouka</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-value">6+</span>
+                    <span class="stat-label">let v prodaji</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-value">∞</span>
+                    <span class="stat-label">padcev → lekcij</span>
+                </div>
+            </div>
+
+            <div class="hero-cta">
+                <a href="#projekti" class="btn btn-primary">
+                    Poglej, kaj sem zgradil
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M7 17L17 7M17 7H7M17 7V17"/>
+                    </svg>
+                </a>
+                <a href="#kontakt" class="btn btn-secondary">Kontakt</a>
+            </div>
+        </div>
+
+        <div class="hero-visual">
+            <img src="george.png" alt="George Ristov" class="hero-image">
+        </div>
+    </section>
+
+    <!-- Story Section -->
+    <section id="zgodba" class="section story-section">
+        <div class="section-container">
+            <div class="section-header">
+                <span class="section-tag">Moja zgodba</span>
+                <h2 class="section-title">Zakaj delam to, kar delam</h2>
+            </div>
+
+            <div class="story-content">
+                <div class="story-intro">
+                    <p class="story-lead">
+                        Pri 19 letih sem postavil svoj prvi strežnik. Še danes deluje.
+                    </p>
+                    <p>
+                        Ko mi nekdo z navdušenjem reče "a veš, kaj lahko narediš s tem?" – oči imam ven kot
+                        mali otrok. Ta stavek je zame kot droga. Enostavno si ne morem pomagati – če ima nekdo
+                        strast do nečesa, se nalezem in sprašujem. V tistem trenutku postanem 100% vajenec.
+                    </p>
+                    <p>
+                        Enkrat sem 2 uri poslušal gospoda, ki mi je razlagal o Formulah. Če bi z njim preživel
+                        še en dan, bi že razmišljal, kako zgraditi svojo. Pač tak sem. In to radovednost
+                        nosim s seboj v vse, kar počnem – od prodaje do tehnologije.
+                    </p>
+                </div>
+
+                <div class="story-cards">
+                    <!-- Card 1: Tech Journey -->
+                    <div class="story-card expandable" data-expanded="false">
+                        <div class="card-preview">
+                            <div class="card-icon">🖥️</div>
+                            <div class="card-info">
+                                <h3>Samouk brez izgovorov</h3>
+                                <p>12 let Linux, Docker, networking - vse sam.</p>
+                            </div>
+                            <button class="expand-btn" aria-label="Razširi">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M6 9l6 6 6-6"/>
+                                </svg>
+                            </button>
+                        </div>
+                        <div class="card-details">
+                            <p class="detail-motivation"><strong>Motivacija:</strong> Stvari preprosto morajo delovati. Če ne, se naučim, kako jih popraviti.</p>
+
+                            <div class="detail-list">
+                                <p class="detail-heading"><strong>Ključni dosežki:</strong></p>
+                                <ul>
+                                    <li>✅ <strong>Lastna infrastruktura:</strong> Strežnik, ki deluje 12 let, 15+ Docker vsebnikov v produkciji</li>
+                                    <li>💡 <strong>Pragmatičen pristop:</strong> Rajši Uptime Kuma kot Zabbix – preprostost pred kompleksnostjo</li>
+                                    <li>🔒 <strong>Admin naloge:</strong> Backup strategije, firewall (UFW), SSL certifikati, uporabniški management</li>
+                                    <li>🎓 <strong>Mentorji:</strong> Network Chuck, David Bombal – vse naučeno preko YouTube in prakse</li>
+                                </ul>
+                            </div>
+
+                            <p class="detail-result"><strong>Rezultat:</strong> Neodvisnost od formalnih sistemov. Globoko razumevanje, kako infrastruktura deluje v praksi – ne samo v teoriji.</p>
+
+                            <div class="detail-tags">
+                                <span>Linux</span>
+                                <span>Docker</span>
+                                <span>Proxmox</span>
+                                <span>Open Source</span>
+                                <span>12+ let</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card 2: Sales & Learning from Failure -->
+                    <div class="story-card expandable" data-expanded="false">
+                        <div class="card-preview">
+                            <div class="card-icon">🎯</div>
+                            <div class="card-info">
+                                <h3>Prodaja + šola življenja</h3>
+                                <p>5 let retail, B2B teren, podjetništvo - in vse vmes.</p>
+                            </div>
+                            <button class="expand-btn" aria-label="Razširi">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M6 9l6 6 6-6"/>
+                                </svg>
+                            </button>
+                        </div>
+                        <div class="card-details">
+                            <p class="detail-motivation"><strong>Motivacija:</strong> Ko padem, analiziram, kje sem naredil napako. Potem se naučim. Potem poskusim znova.</p>
+
+                            <div class="detail-list">
+                                <p class="detail-heading"><strong>Izkušnje:</strong></p>
+                                <ul>
+                                    <li>🏪 <strong>Bauhaus (5 let):</strong> Strokovnjak za električna orodja - ne samo prodaja, ampak svetovanje</li>
+                                    <li>🚗 <strong>Lindström (8 mes):</strong> B2B terenska prodaja, Dynamics 365 CRM vsak dan</li>
+                                    <li>💆 <strong>VK Masaže:</strong> Od 14→150 strank/mesec, 70% konverzija, BNI Dubai prezentacija</li>
+                                    <li>📚 <strong>Šola življenja:</strong> MLM-ji, dropshipping – spodletelo, a sem se iz vsake napake kaj naučil</li>
+                                </ul>
+                            </div>
+
+                            <p class="detail-result"><strong>Rezultat:</strong> Razumem prodajo iz vseh zornih kotov. Vem, kako se prodaja, kako se ne prodaja in kako prepoznati prazne obljube, ko jih zasledim.</p>
+
+                            <div class="detail-tags">
+                                <span>B2B</span>
+                                <span>Retail</span>
+                                <span>Podjetništvo</span>
+                                <span>CRM</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card 3: AI First -->
+                    <div class="story-card expandable" data-expanded="false">
+                        <div class="card-preview">
+                            <div class="card-icon">🤖</div>
+                            <div class="card-info">
+                                <h3>AI kot orodje, ne buzzword</h3>
+                                <p>Investiral sem v učenje. Testiram vse - od agentov do Llame.</p>
+                            </div>
+                            <button class="expand-btn" aria-label="Razširi">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M6 9l6 6 6-6"/>
+                                </svg>
+                            </button>
+                        </div>
+                        <div class="card-details">
+                            <p class="detail-motivation"><strong>Motivacija:</strong> AI ni buzzword – je orodje. In orodja se je treba naučiti uporabljati pravilno.</p>
+
+                            <div class="detail-list">
+                                <p class="detail-heading"><strong>Kako se učim:</strong></p>
+                                <ul>
+                                    <li>💸 <strong>Investicija:</strong> Plačana izobraževanja, tečaji, premium naročnine – ker se splača</li>
+                                    <li>🧪 <strong>Testiranje:</strong> Od AI agentov do specializiranih orodij – vse poskusim, preden sodim</li>
+                                    <li>🖥️ <strong>Self-hosted:</strong> Llama, Ollama na lastnih strežnikih – razumem, kaj se dogaja "pod pokrovom"</li>
+                                    <li>🔧 <strong>Praktična uporaba:</strong> n8n avtomatizacije, Make.com workflow-i, API integracije</li>
+                                </ul>
+                            </div>
+
+                            <p class="detail-result"><strong>Rezultat:</strong> Ne znam programirati v klasičnem smislu. Ampak razumem arhitekturo, vem, kaj potrebujem, in znam AI-ju pojasniti tako, da naredi točno to. <em>"I let AI write it, I debug it."</em></p>
+
+                            <div class="detail-tags">
+                                <span>Claude</span>
+                                <span>ChatGPT</span>
+                                <span>Llama</span>
+                                <span>n8n</span>
+                                <span>Ollama</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card 4: Sales Philosophy -->
+                    <div class="story-card expandable" data-expanded="false">
+                        <div class="card-preview">
+                            <div class="card-icon">🧠</div>
+                            <div class="card-info">
+                                <h3>Prodaja kot psihologija</h3>
+                                <p>Ne prodajam. Poslušam, razumem, povežem.</p>
+                            </div>
+                            <button class="expand-btn" aria-label="Razširi">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M6 9l6 6 6-6"/>
+                                </svg>
+                            </button>
+                        </div>
+                        <div class="card-details">
+                            <p class="detail-motivation"><strong>Filozofija:</strong> Prodaja ni potiskanje produkta. Je razumevanje človeka pred tabo – kaj potrebuje, kaj ga skrbi, kaj mu manjka.</p>
+
+                            <div class="detail-list">
+                                <p class="detail-heading"><strong>Kako to izgleda v praksi:</strong></p>
+                                <ul>
+                                    <li>👂 <strong>Najprej poslušam:</strong> Preden karkoli rečem, razumem situacijo. Stranka sama pove, kaj potrebuje – če ji daš prostor.</li>
+                                    <li>🚪 <strong>Odpiram vrata, ne silim:</strong> Predmet ali storitev je lahko začetek pogovora, ne pa generično vsiljevanje.</li>
+                                    <li>🎯 <strong>Rešujem probleme:</strong> Ne prodajam funkcij. Prodajam rešitev za specifičen problem, ki ga ima stranka.</li>
+                                    <li>🤝 <strong>Gradim zaupanje:</strong> Če se večkrat pojavim, zgradim odnos – tudi če si ne rečeva veliko.</li>
+                                </ul>
+                            </div>
+
+                            <p class="detail-result"><strong>Rezultat:</strong> Ko poslušaš in stranka postane "odprta knjiga", dobiš informacije za pravo rešitev. Prodaja postane pogovor, ne bitka.</p>
+
+                            <div class="detail-tags">
+                                <span>Psihologija</span>
+                                <span>Poslušanje</span>
+                                <span>Zaupanje</span>
+                                <span>Empatija</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Projects Section -->
+    <section id="projekti" class="section projects-section">
+        <div class="section-container">
+            <div class="section-header">
+                <span class="section-tag">Projekti</span>
+                <h2 class="section-title">Ko teorija postane praksa</h2>
+                <p class="section-desc">Ne govorim, kaj znam. Pokažem, kaj sem naredil.</p>
+            </div>
+
+            <!-- Quick Access Cards - Horizontal -->
+            <div class="projects-showcase horizontal">
+                <!-- Web Projects Card -->
+                <div class="showcase-card" data-modal="webprojects">
+                    <div class="showcase-icon">🌐</div>
+                    <div class="showcase-content">
+                        <h4>Spletni projekti</h4>
+                        <p>WordPress + custom koda</p>
+                        <div class="showcase-stats">
+                            <span>10+ strani</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Automations Card -->
+                <div class="showcase-card" data-modal="automations">
+                    <div class="showcase-icon">⚡</div>
+                    <div class="showcase-content">
+                        <h4>Avtomatizacije</h4>
+                        <p>Workflow-i, ki delajo</p>
+                        <div class="showcase-stats">
+                            <span>n8n • Make.com</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Self-hosted Stack Card -->
+                <div class="showcase-card" data-modal="selfhosted">
+                    <div class="showcase-icon">🏠</div>
+                    <div class="showcase-content">
+                        <h4>Self-hosted</h4>
+                        <p>15+ Docker servisov</p>
+                        <div class="showcase-stats">
+                            <span>12 let uptime</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Featured Project: Eva -->
+            <div class="project-featured-card" data-modal="eva">
+                <div class="project-card-content">
+                    <div class="project-header">
+                        <span class="project-badge">Featured</span>
+                        <h3>Eva Chatbot za eTutee</h3>
+                    </div>
+                    <p class="project-desc">
+                        AI asistentka za tutorsko podjetje. Od n8n prototipa do custom FastAPI rešitve.
+                    </p>
+
+                    <div class="project-metrics">
+                        <div class="metric">
+                            <span class="metric-value">&lt;1s</span>
+                            <span class="metric-label">odziv</span>
+                        </div>
+                        <div class="metric">
+                            <span class="metric-value">97%</span>
+                            <span class="metric-label">avtonomno</span>
+                        </div>
+                        <div class="metric">
+                            <span class="metric-value">€5</span>
+                            <span class="metric-label">/mesec</span>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="project-card-preview">
+                    <img src="eva-architecture.svg" alt="Eva arhitektura" class="architecture-preview">
+                </div>
+                <button class="btn-modal-open">
+                    <span>Poglej, kako deluje</span>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="3" width="18" height="18" rx="2"/>
+                        <path d="M9 9l6 6M15 9l-6 6"/>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Featured Project 2: TablesPro -->
+            <div class="project-featured-card secondary" data-modal="tablespro">
+                <div class="project-card-content">
+                    <div class="project-header">
+                        <span class="project-badge">Open Source</span>
+                        <h3>TablesPro - Nextcloud CRM</h3>
+                    </div>
+                    <p class="project-desc">
+                        Nextcloud Tables + Monday.com dizajn. Brezplačna alternativa dragemu CRM-ju.
+                    </p>
+
+                    <div class="project-metrics">
+                        <div class="metric">
+                            <span class="metric-value">3v1</span>
+                            <span class="metric-label">orodja</span>
+                        </div>
+                        <div class="metric">
+                            <span class="metric-value">€0</span>
+                            <span class="metric-label">/mesec</span>
+                        </div>
+                        <div class="metric">
+                            <span class="metric-value">100%</span>
+                            <span class="metric-label">self-host</span>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="project-card-preview">
+                    <div class="tech-preview">
+                        <div class="tech-preview-item">📊 Tables</div>
+                        <div class="tech-preview-plus">+</div>
+                        <div class="tech-preview-item">📋 Deck</div>
+                        <div class="tech-preview-plus">+</div>
+                        <div class="tech-preview-item">🎨 Monday UI</div>
+                        <div class="tech-preview-equals">=</div>
+                        <div class="tech-preview-result">TablesPro</div>
+                    </div>
+                </div>
+                <button class="btn-modal-open">
+                    <span>Poglej, kaj sem dodal</span>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="3" width="18" height="18" rx="2"/>
+                        <path d="M9 9l6 6M15 9l-6 6"/>
+                    </svg>
+                </button>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Journey Section -->
+    <section id="pot" class="section journey-section">
+        <div class="section-container">
+            <div class="section-header">
+                <span class="section-tag">Karierna pot</span>
+                <h2 class="section-title">Od prodajalca do AI arhitekta</h2>
+            </div>
+
+            <div class="timeline">
+                <div class="timeline-item expandable" data-expanded="false">
+                    <div class="timeline-marker current"></div>
+                    <div class="timeline-content">
+                        <div class="timeline-header">
+                            <span class="timeline-date">2024 - danes (8 mesecev)</span>
+                            <h4>Lindström</h4>
+                            <p class="timeline-role">B2B Field Sales - predpražniki</p>
+                        </div>
+                        <button class="expand-btn-text">Več o tej vlogi →</button>
+                        <div class="timeline-details">
+                            <p>Terenska B2B prodaja tekstilnih storitev. Dynamics 365 CRM vsak dan. Razvil sem tudi interno Mat Tracker PWA aplikacijo za sledenje inventarju – ker sem jo potreboval.</p>
+                            <div class="achievement-badges">
+                                <span>B2B teren</span>
+                                <span>Dynamics 365</span>
+                                <span>PWA app</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="timeline-item expandable" data-expanded="false">
+                    <div class="timeline-marker"></div>
+                    <div class="timeline-content">
+                        <div class="timeline-header">
+                            <span class="timeline-date">2022 - 2024</span>
+                            <h4>VK Športne Masaže</h4>
+                            <p class="timeline-role">Ustanovitelj & lastnik</p>
+                        </div>
+                        <button class="expand-btn-text">Več o tej vlogi →</button>
+                        <div class="timeline-details">
+                            <p>
+                                Ustanovil sem lastno podjetje. Od nič do 150 strank na mesec.
+                                70-odstotna konverzija iz brezplačnih posvetovanj. Predstavljal sem
+                                v Dubaju na BNI konferenci. Postavil WordPress stran z SEO strategijo.
+                            </p>
+                            <div class="achievement-badges">
+                                <span>14→150 strank</span>
+                                <span>70% konverzija</span>
+                                <span>BNI Dubai</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="timeline-item expandable" data-expanded="false">
+                    <div class="timeline-marker"></div>
+                    <div class="timeline-content">
+                        <div class="timeline-header">
+                            <span class="timeline-date">2019 - 2024 (5 let)</span>
+                            <h4>Bauhaus d.o.o.</h4>
+                            <p class="timeline-role">Prodaja - oddelek orodja</p>
+                        </div>
+                        <button class="expand-btn-text">Več o tej vlogi →</button>
+                        <div class="timeline-details">
+                            <p>
+                                5 let v maloprodaji električnih orodij. Postal sem strokovnjak
+                                za orodja – ne le prodajalec, temveč svetovalec, ki razume, kaj
+                                stranka resnično potrebuje.
+                            </p>
+                            <div class="achievement-badges">
+                                <span>5 let</span>
+                                <span>Ekspert za orodja</span>
+                                <span>Svetovalec</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="timeline-item expandable" data-expanded="false">
+                    <div class="timeline-marker"></div>
+                    <div class="timeline-content">
+                        <div class="timeline-header">
+                            <span class="timeline-date">Vmes</span>
+                            <h4>Šola življenja</h4>
+                            <p class="timeline-role">MLM, dropshipping, "pasivni prihodki"</p>
+                        </div>
+                        <button class="expand-btn-text">Več o tej poti →</button>
+                        <div class="timeline-details">
+                            <p>
+                                Da, preizkusil sem vse. MLM-je, dropshipping, vse, kar obljublja
+                                hiter denar. Spodletelo je. Večkrat sem bil prevaran.
+                                Vendar me je vsaka izkušnja naučila nekaj novega – od knjig
+                                do spletnih vodičev, analiziral sem vsako napako.
+                            </p>
+                            <div class="achievement-badges">
+                                <span>Padci</span>
+                                <span>Lekcije</span>
+                                <span>Rast</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="timeline-item expandable" data-expanded="false">
+                    <div class="timeline-marker tech"></div>
+                    <div class="timeline-content">
+                        <div class="timeline-header">
+                            <span class="timeline-date">2012 - danes</span>
+                            <h4>Self-taught tech pot</h4>
+                            <p class="timeline-role">Večni učenec</p>
+                        </div>
+                        <button class="expand-btn-text">Več o tej poti →</button>
+                        <div class="timeline-details">
+                            <p>
+                                Pri 19 letih sem postavil svoj prvi strežnik. Še danes deluje.
+                                Nikoli nisem delal v IT podjetju – moje znanje temelji na odprti kodi.
+                                Network Chuck, David Bombal – moja YouTube mentorja.
+                                Zdaj vlagam v AI – izobraževanja, orodja, lastne modele.
+                            </p>
+                            <div class="achievement-badges">
+                                <span>12+ let</span>
+                                <span>Open Source</span>
+                                <span>AI investicija</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Why Me Section -->
+    <section class="section why-section">
+        <div class="section-container">
+            <div class="why-content">
+                <div class="why-text">
+                    <span class="section-tag">Zakaj jaz?</span>
+                    <h2 class="section-title">Zakaj izbrati mene</h2>
+                    <p class="why-intro">Rad delam samostojno in verjamem, da za vsako težavo obstaja rešitev.</p>
+
+                    <div class="match-list">
+                        <div class="match-item">
+                            <span class="match-check">✓</span>
+                            <div class="match-content">
+                                <strong>WordPress 2+ let</strong>
+                                <span>5+ let izkušenj, VK Masaže stran, custom teme, SEO</span>
+                            </div>
+                        </div>
+                        <div class="match-item">
+                            <span class="match-check">✓</span>
+                            <div class="match-content">
+                                <strong>AI first mindset</strong>
+                                <span>Investiral v izobraževanja, testiram vse od Claude do Llame</span>
+                            </div>
+                        </div>
+                        <div class="match-item">
+                            <span class="match-check">✓</span>
+                            <div class="match-content">
+                                <strong>n8n in Python avtomatizacije</strong>
+                                <span>Aktivno gradim workflow-e, Eva chatbot kot dokaz</span>
+                            </div>
+                        </div>
+                        <div class="match-item">
+                            <span class="match-check">✓</span>
+                            <div class="match-content">
+                                <strong>Samostojno delo</strong>
+                                <span>10+ projektov za stranke, vedno dostavljenih pred rokom</span>
+                            </div>
+                        </div>
+                        <div class="match-item">
+                            <span class="match-check">✓</span>
+                            <div class="match-content">
+                                <strong>Dolgoročno sodelovanje</strong>
+                                <span>5 let v Bauhausu – ostanem, kjer je dobro, ne skačem</span>
+                            </div>
+                        </div>
+                        <div class="match-item">
+                            <span class="match-check">✓</span>
+                            <div class="match-content">
+                                <strong>Storytelling</strong>
+                                <span>Znam kompleksne stvari razložiti skozi zgodbe, ki jih ljudje zapomnijo</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="why-visual">
+                    <div class="personality-card">
+                        <h4>Moj način dela</h4>
+                        <div class="personality-traits">
+                            <div class="trait">
+                                <span class="trait-icon">👂</span>
+                                <span>Najprej poslušam</span>
+                            </div>
+                            <div class="trait">
+                                <span class="trait-icon">🔍</span>
+                                <span>Potem raziskujem</span>
+                            </div>
+                            <div class="trait">
+                                <span class="trait-icon">💡</span>
+                                <span>Povežem pike in načrtujem</span>
+                            </div>
+                            <div class="trait">
+                                <span class="trait-icon">🛠️</span>
+                                <span>Zgradim rešitev</span>
+                            </div>
+                        </div>
+                        <div class="personality-quote">
+                            "Zmaga je le trenutek. Pot in tisto, kar postaneš na njej, pa ostane."
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="kontakt" class="section contact-section">
+        <div class="section-container">
+            <div class="contact-content">
+                <div class="contact-info">
+                    <span class="section-tag">Kontakt</span>
+                    <h2 class="section-title">Pogovorimo se.</h2>
+                    <p>Rad bi slišal več o vas in kako lahko prispevam.</p>
+
+                    <div class="contact-details">
+                        <a href="mailto:ristovgeorge@gmail.com" class="contact-item">
+                            <span class="contact-icon">📧</span>
+                            <span>ristovgeorge@gmail.com</span>
+                        </a>
+                        <a href="tel:+38670232293" class="contact-item">
+                            <span class="contact-icon">📱</span>
+                            <span>+386 70 232 293</span>
+                        </a>
+                        <a href="https://www.linkedin.com/in/george-ristov/" target="_blank" class="contact-item">
+                            <span class="contact-icon">💼</span>
+                            <span>LinkedIn</span>
+                        </a>
+                        <a href="https://github.com/Dzo4e2250" target="_blank" class="contact-item">
+                            <span class="contact-icon">🐙</span>
+                            <span>GitHub</span>
+                        </a>
+                    </div>
+
+                    <div class="contact-location">
+                        <span class="contact-icon">📍</span>
+                        <span>Maribor, Slovenija</span>
+                    </div>
+                </div>
+
+                <div class="contact-cta">
+                    <div class="cta-card">
+                        <h4>Pripravljen na pogovor</h4>
+                        <p>
+                            Če iščete nekoga, ki bo prevzel odgovornost, samostojno reševal
+                            probleme in prinašal rezultate – sem na voljo.
+                        </p>
+                        <a href="mailto:ristovgeorge@gmail.com?subject=Prijava%20na%20delovno%20mesto" class="btn btn-primary">
+                            Pošlji email
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="22" y1="2" x2="11" y2="13"/>
+                                <polygon points="22,2 15,22 11,13 2,9"/>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-left">
+                <span class="footer-logo">George Ristov<span class="accent">.</span></span>
+                <span class="footer-tagline">Samo domišljija je lahko omejitev.</span>
+            </div>
+            <div class="footer-right">
+                <span>2026 · Zgrajeno z AI pomočjo, ker tako delam.</span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Project Modal -->
+    <div class="modal-overlay" id="projectModal">
+        <div class="modal-container">
+            <button class="modal-close" aria-label="Zapri">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M18 6L6 18M6 6l12 12"/>
+                </svg>
+            </button>
+
+            <div class="modal-content" id="modalContent">
+                <!-- Content injected by JS -->
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
