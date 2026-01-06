@@ -810,6 +810,10 @@ img {
     align-items: start;
 }
 
+.why-visual {
+    margin-top: 200px; /* Align with AI first mindset card */
+}
+
 .why-text .section-tag {
     text-align: left;
 }
@@ -2167,6 +2171,10 @@ img {
         gap: var(--space-2xl);
     }
 
+    .why-visual {
+        margin-top: 0;
+    }
+
     /* Mobile: Kompaktna kartica */
     .project-featured-card {
         display: flex !important;
@@ -2616,6 +2624,27 @@ img {
     border-radius: var(--radius-md);
     font-size: 1rem;
     font-weight: 700;
+}
+
+/* Projects More Button */
+.projects-more {
+    display: flex;
+    justify-content: center;
+    margin-top: var(--space-2xl);
+}
+
+.projects-more .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-sm);
+}
+
+.projects-more .btn svg {
+    transition: transform var(--transition-fast);
+}
+
+.projects-more .btn:hover svg {
+    transform: translateX(2px);
 }
 
 /* ==========================================================================

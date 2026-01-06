@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="sl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>O meni | George Ristov</title>
+    <meta name="description" content="Motivacijsko pismo - George Ristov. Prodajalec, ki gradi tehnične rešitve.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* About Page Specific Styles */
+        .about-hero {
+            padding: calc(var(--space-4xl) + 60px) var(--space-xl) var(--space-3xl);
+            background: var(--bg-secondary);
+        }
+
+        .about-hero-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .about-hero .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-sm);
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            margin-bottom: var(--space-xl);
+            transition: color var(--transition-fast);
+        }
+
+        .about-hero .back-link:hover {
+            color: var(--accent-primary);
+        }
+
+        .about-hero .back-link svg {
+            transition: transform var(--transition-fast);
+        }
+
+        .about-hero .back-link:hover svg {
+            transform: translateX(-4px);
+        }
+
+        .about-hero h1 {
+            font-size: clamp(2rem, 5vw, 3rem);
+            font-weight: 700;
+            margin-bottom: var(--space-lg);
+            line-height: 1.2;
+        }
+
+        .about-hero .lead {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            line-height: 1.7;
+        }
+
+        /* Content Sections */
+        .about-content {
+            padding: var(--space-3xl) var(--space-xl);
+        }
+
+        .about-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .about-section {
+            margin-bottom: var(--space-4xl);
+        }
+
+        .about-section:last-child {
+            margin-bottom: 0;
+        }
+
+        .about-section h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: var(--space-lg);
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+        }
+
+        .about-section h2 .section-icon {
+            font-size: 1.25rem;
+        }
+
+        .about-section p {
+            color: var(--text-secondary);
+            line-height: 1.8;
+            margin-bottom: var(--space-md);
+        }
+
+        .about-section p:last-child {
+            margin-bottom: 0;
+        }
+
+        .about-section strong {
+            color: var(--text-primary);
+        }
+
+        /* Highlight Box */
+        .highlight-box {
+            background: var(--gradient-subtle);
+            padding: var(--space-xl);
+            border-radius: var(--radius-lg);
+            border-left: 4px solid var(--accent-primary);
+            margin: var(--space-xl) 0;
+        }
+
+        .highlight-box p {
+            margin-bottom: 0;
+            font-style: italic;
+        }
+
+        /* Values List */
+        .values-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: var(--space-md);
+            margin-top: var(--space-lg);
+        }
+
+        .value-item {
+            background: var(--bg-secondary);
+            padding: var(--space-lg);
+            border-radius: var(--radius-md);
+            border: 1px solid var(--bg-tertiary);
+        }
+
+        .value-item h4 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: var(--space-sm);
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+        }
+
+        .value-item p {
+            font-size: 0.9rem;
+            margin-bottom: 0;
+        }
+
+        /* Quote Section */
+        .about-quote {
+            text-align: center;
+            padding: var(--space-3xl) var(--space-xl);
+            background: var(--bg-secondary);
+        }
+
+        .about-quote blockquote {
+            font-size: 1.5rem;
+            font-weight: 500;
+            color: var(--text-primary);
+            max-width: 700px;
+            margin: 0 auto var(--space-md);
+            line-height: 1.5;
+        }
+
+        .about-quote cite {
+            color: var(--text-muted);
+            font-style: normal;
+            font-size: 0.9rem;
+        }
+
+        /* CTA Section */
+        .about-cta {
+            text-align: center;
+            padding: var(--space-3xl) var(--space-xl);
+            background: var(--bg-primary);
+        }
+
+        .about-cta h2 {
+            font-size: 1.75rem;
+            margin-bottom: var(--space-md);
+        }
+
+        .about-cta p {
+            color: var(--text-secondary);
+            margin-bottom: var(--space-xl);
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .about-cta .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-sm);
+        }
+
+        /* Timeline mini */
+        .mini-timeline {
+            margin-top: var(--space-lg);
+            padding-left: var(--space-lg);
+            border-left: 2px solid var(--bg-tertiary);
+        }
+
+        .mini-timeline-item {
+            position: relative;
+            padding-bottom: var(--space-lg);
+            padding-left: var(--space-lg);
+        }
+
+        .mini-timeline-item:last-child {
+            padding-bottom: 0;
+        }
+
+        .mini-timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -7px;
+            top: 6px;
+            width: 12px;
+            height: 12px;
+            background: var(--accent-primary);
+            border-radius: 50%;
+        }
+
+        .mini-timeline-item .year {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--accent-primary);
+            margin-bottom: var(--space-xs);
+        }
+
+        .mini-timeline-item .event {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+        }
+
+        @media (max-width: 768px) {
+            .values-list {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body class="about-page">
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo">George Ristov<span class="accent">.</span></a>
+            <div class="nav-links">
+                <a href="index.html#zgodba" class="nav-link">Zgodba</a>
+                <a href="index.html#projekti" class="nav-link">Projekti</a>
+                <a href="index.html#pot" class="nav-link">Pot</a>
+                <a href="o-meni.html" class="nav-link active">O meni</a>
+                <a href="index.html#kontakt" class="nav-link btn-nav">Kontakt</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <section class="about-hero">
+        <div class="about-hero-container">
+            <a href="index.html" class="back-link">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M19 12H5M12 19l-7-7 7-7"/>
+                </svg>
+                Nazaj na glavno stran
+            </a>
+            <h1>Pozdravljeni. Sem George.</h1>
+            <p class="lead">
+                To ni klasičen življenjepis. To je zgodba o tem, kako me radovednost vodi skozi življenje
+                in zakaj verjamem, da sem lahko dragocen član vaše ekipe.
+            </p>
+        </div>
+    </section>
+
+    <!-- Content -->
+    <div class="about-content">
+        <div class="about-container">
+
+            <!-- Kdo sem -->
+            <section class="about-section">
+                <h2><span class="section-icon">👤</span> Kdo sem</h2>
+                <p>
+                    Imam 31 let in živim v Mariboru. Rojen sem bil v Makedoniji, a sem odraščal tukaj.
+                    Slovenija je moj dom. Govorim slovensko, makedonsko, angleško in srbohrvaško.
+                </p>
+                <p>
+                    Nisem klasičen IT-jevec. Nimam diplome iz računalništva. Nimam leta izkušenj v IT podjetju.
+                    Imam pa nekaj drugega: <strong>12 let neprekinjenega učenja</strong>, eksperimentiranja in gradnje.
+                </p>
+                <p>
+                    Pri 19 letih sem postavil svoj prvi Linux strežnik. Še danes deluje.
+                    To ni bila služba ali projekt za stranko. Bilo je čisto moje - zato, ker me je zanimalo.
+                </p>
+
+                <div class="highlight-box">
+                    <p>
+                        "Ko mi nekdo z navdušenjem reče 'a veš, kaj lahko narediš s tem?' - oči imam ven kot mali otrok.
+                        Ta stavek je zame kot droga."
+                    </p>
+                </div>
+            </section>
+
+            <!-- Moja pot -->
+            <section class="about-section">
+                <h2><span class="section-icon">🛤️</span> Moja pot</h2>
+                <p>
+                    Moja kariera ni bila linearna. Delal sem v prodaji, imel svoje podjetje,
+                    padel in se dvignil. Vsaka izkušnja me je nekaj naučila.
+                </p>
+
+                <div class="mini-timeline">
+                    <div class="mini-timeline-item">
+                        <div class="year">2012</div>
+                        <div class="event">Postavil prvi Linux strežnik. Začel se učiti Docker, networking, self-hosting.</div>
+                    </div>
+                    <div class="mini-timeline-item">
+                        <div class="year">2019-2024</div>
+                        <div class="event">5 let v Bauhausu. Postal strokovnjak za električna orodja. Naučil se prodaje, ki temelji na zaupanju.</div>
+                    </div>
+                    <div class="mini-timeline-item">
+                        <div class="year">2022-2024</div>
+                        <div class="event">Ustanovil VK Športne Masaže. Od 14 do 150 strank/mesec. Predstavljal v Dubaju.</div>
+                    </div>
+                    <div class="mini-timeline-item">
+                        <div class="year">2024</div>
+                        <div class="event">Lindström - B2B terenska prodaja. Dynamics 365 CRM vsak dan. Razvil interno aplikacijo.</div>
+                    </div>
+                    <div class="mini-timeline-item">
+                        <div class="year">Vmes</div>
+                        <div class="event">MLM-ji, dropshipping, "pasivni prihodki". Spodletelo. Ampak sem se iz vsake napake kaj naučil.</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Zakaj tehnologija -->
+            <section class="about-section">
+                <h2><span class="section-icon">💡</span> Zakaj tehnologija</h2>
+                <p>
+                    Tehnologija me fascinira, ker omogoča reševanje problemov. Ne znam programirati v klasičnem smislu -
+                    ne bom napisal algoritma za sortiranje brez pomoči. Ampak razumem arhitekturo, vem kaj potrebujem,
+                    in znam AI-ju pojasniti tako, da naredi točno to.
+                </p>
+                <p>
+                    <strong>"I let AI write it, I debug it."</strong> To je moj pristop. In deluje.
+                </p>
+                <p>
+                    Zgradil sem Eva chatbot za eTutee - od n8n prototipa do custom FastAPI rešitve z WebSocket-i
+                    in RAG sistemom. Nisem vedel, kako se to naredi. Ampak sem se naučil, ker je bilo treba.
+                </p>
+                <p>
+                    Investiram v svoje znanje. Plačana izobraževanja, tečaji, premium naročnine na AI orodja.
+                    Ker verjamem, da se to splača. AI ni buzzword - je orodje. In orodja se je treba naučiti uporabljati pravilno.
+                </p>
+            </section>
+
+            <!-- Moja filozofija -->
+            <section class="about-section">
+                <h2><span class="section-icon">🧠</span> Moja filozofija dela</h2>
+                <p>
+                    V prodaji sem se naučil najpomembnejše lekcije: <strong>najprej poslušaj</strong>.
+                    Preden karkoli rečem, razumem situacijo. Stranka sama pove, kaj potrebuje - če ji daš prostor.
+                </p>
+                <p>
+                    Enako velja za tehnične probleme. Ne skočim takoj na rešitev. Najprej razumem problem.
+                    Potem raziskujem možnosti. Šele nato gradim.
+                </p>
+
+                <div class="values-list">
+                    <div class="value-item">
+                        <h4>👂 Poslušanje</h4>
+                        <p>Razumem, preden predlagam. Vprašanja so bolj pomembna kot odgovori.</p>
+                    </div>
+                    <div class="value-item">
+                        <h4>🔍 Raziskovanje</h4>
+                        <p>Ne zadovoljim se s prvo rešitvijo. Raziščem alternative.</p>
+                    </div>
+                    <div class="value-item">
+                        <h4>🛠️ Pragmatičnost</h4>
+                        <p>Raje Uptime Kuma kot Zabbix. Preprostost pred kompleksnostjo.</p>
+                    </div>
+                    <div class="value-item">
+                        <h4>📚 Nenehno učenje</h4>
+                        <p>12 let samouka. YouTube mentorji, dokumentacija, trial and error.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Kaj iščem -->
+            <section class="about-section">
+                <h2><span class="section-icon">🎯</span> Kaj iščem</h2>
+                <p>
+                    Iščem okolje, kjer lahko združim svoje izkušnje iz prodaje s tehničnim znanjem.
+                    Kjer lahko gradim rešitve, ki dejansko pomagajo ljudem.
+                    Kjer je prostor za radovednost in eksperimentiranje.
+                </p>
+                <p>
+                    Rad delam samostojno. Ne potrebujem nekoga, ki mi stoji za hrbtom.
+                    Ampak cenim ekipo, ki deli znanje in se uči skupaj.
+                </p>
+                <p>
+                    <strong>5 let v Bauhausu</strong> dokazuje, da ostanem, kjer je dobro. Ne skačem od službe do službe.
+                    Ko najdem pravo mesto, se posvetim in gradim dolgoročno.
+                </p>
+            </section>
+
+            <!-- Zakaj ravno jaz -->
+            <section class="about-section">
+                <h2><span class="section-icon">✨</span> Zakaj ravno jaz</h2>
+                <p>
+                    Ker nisem tipičen kandidat. In morda je ravno to prednost.
+                </p>
+                <p>
+                    Razumem prodajo - kako poslušati stranko, kako graditi zaupanje, kako predstaviti rešitev.
+                    Razumem tehnologijo - kako deluje infrastruktura, kako avtomatizirati procese, kako izkoristiti AI.
+                </p>
+                <p>
+                    Ta kombinacija je redka. In verjamem, da je dragocena.
+                </p>
+                <p>
+                    Nisem popoln. Nimam vseh odgovorov. Ampak imam nekaj, kar je morda bolj pomembno:
+                    <strong>radovednost, vztrajnost in pripravljenost se učiti</strong>.
+                </p>
+
+                <div class="highlight-box">
+                    <p>
+                        "Zmaga je le trenutek. Pot in tisto, kar postaneš na njej, pa ostane."
+                    </p>
+                </div>
+            </section>
+
+        </div>
+    </div>
+
+    <!-- Quote -->
+    <section class="about-quote">
+        <blockquote>
+            "Ne povem, kaj znam. Pokažem."
+        </blockquote>
+        <cite>- Moj pristop k delu</cite>
+    </section>
+
+    <!-- CTA -->
+    <section class="about-cta">
+        <h2>Pogovorimo se</h2>
+        <p>Če ste prebrali do sem, me verjetno zanimate tudi vi. Rad bi slišal več o vas in vaših izzivih.</p>
+        <a href="mailto:ristovgeorge@gmail.com?subject=Pozdravljeni%20George!&body=Pozdravljeni%20George,%0D%0A%0D%0APrebral%20sem%20vašo%20stran%20in%20me%20zanima%20več%20o%20vas.%0D%0A%0D%0A%0D%0ALep%20pozdrav" class="btn btn-primary">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                <polyline points="22,6 12,13 2,6"/>
+            </svg>
+            Pošlji email
+        </a>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-left">
+                <span class="footer-logo">George Ristov<span class="accent">.</span></span>
+                <span class="footer-tagline">Samo domišljija je lahko omejitev.</span>
+            </div>
+            <div class="footer-right">
+                <span>2026 · Zgrajeno z AI pomočjo, ker tako delam.</span>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
