@@ -921,36 +921,46 @@ img {
     font-size: 1.1rem;
 }
 
-.cta-item {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: var(--space-xs);
-    background: linear-gradient(135deg, var(--bg-card) 0%, var(--bg-secondary) 100%);
-    border-color: var(--accent-primary);
-    border-width: 2px;
-}
-
-.cta-item .contact-icon {
-    position: absolute;
-    top: var(--space-sm);
-    right: var(--space-sm);
-}
-
-.cta-item {
-    position: relative;
-    padding-right: var(--space-2xl);
-}
-
-.cta-btn {
-    font-size: 0.8rem;
-    font-weight: 600;
-    color: var(--accent-primary);
+/* CTA Hero Card */
+.contact-cta-hero {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    padding: var(--space-md) var(--space-xl);
+    background: linear-gradient(135deg, var(--accent-primary) 0%, #0f766e 100%);
+    border: none;
+    border-radius: var(--radius-md);
     text-decoration: none;
-    transition: color var(--transition-fast);
+    color: white;
+    font-weight: 500;
+    transition: all var(--transition-base);
+    box-shadow: 0 4px 14px rgba(13, 148, 136, 0.35);
 }
 
-.cta-btn:hover {
-    color: var(--accent-secondary);
+.contact-cta-hero:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(13, 148, 136, 0.45);
+}
+
+.cta-hero-icon {
+    font-size: 1.5rem;
+    filter: grayscale(1) brightness(10);
+}
+
+.cta-hero-content {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.cta-hero-title {
+    font-size: 0.95rem;
+    font-weight: 600;
+}
+
+.cta-hero-action {
+    font-size: 0.8rem;
+    opacity: 0.9;
 }
 
 /* Contact Form */
@@ -1185,14 +1195,8 @@ img {
         justify-content: center;
     }
 
-    .cta-item {
-        align-items: center;
-        text-align: center;
-        padding-right: var(--space-lg);
-    }
-
-    .cta-item .contact-icon {
-        position: static;
+    .contact-cta-hero {
+        justify-content: center;
     }
 }
 
