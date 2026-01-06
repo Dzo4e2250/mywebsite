@@ -921,6 +921,17 @@ img {
     font-size: 1.1rem;
 }
 
+.contact-icon-svg {
+    width: 20px;
+    height: 20px;
+    fill: var(--text-secondary);
+    transition: fill var(--transition-fast);
+}
+
+.contact-item:hover .contact-icon-svg {
+    fill: var(--accent-primary);
+}
+
 /* CTA Hero Card */
 .contact-cta-hero {
     display: flex;
