@@ -1047,87 +1047,106 @@ img {
 }
 
 /* ==========================================================================
-   CTA CREDENTIALS - Integrated Languages & Education
+   QUICK INFO STRIP - Languages & Education
    ========================================================================== */
 
-.cta-credentials {
-    margin-top: var(--space-lg);
-    padding-top: var(--space-lg);
+.quick-info-strip {
+    background: var(--bg-primary);
+    padding: var(--space-2xl) var(--space-xl);
     border-top: 1px solid var(--bg-tertiary);
-    display: flex;
-    align-items: center;
-    gap: var(--space-lg);
 }
 
-.credentials-languages {
+.quick-info-container {
+    max-width: 900px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.quick-info-location {
     display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-sm);
+    margin-bottom: var(--space-xl);
+}
+
+.location-icon {
+    font-size: 1.25rem;
+}
+
+.location-text {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.quick-info-cards {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
     gap: var(--space-md);
-    flex: 1;
 }
 
-.lang-item {
+.info-card {
     display: flex;
     align-items: center;
-    gap: 6px;
-    cursor: default;
+    gap: var(--space-sm);
+    padding: var(--space-sm) var(--space-md);
+    background: var(--bg-card);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--bg-tertiary);
+    transition: all var(--transition-fast);
 }
 
-.lang-flag {
-    font-size: 1rem;
-    line-height: 1;
+.info-card:hover {
+    border-color: var(--accent-primary);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-sm);
 }
 
-.lang-bar {
-    width: 32px;
-    height: 4px;
-    background: var(--bg-tertiary);
-    border-radius: 2px;
-    overflow: hidden;
+.card-flag {
+    font-size: 1.1rem;
 }
 
-.lang-fill {
-    height: 100%;
-    background: var(--accent-primary);
-    border-radius: 2px;
-    transition: width 0.5s ease;
-}
-
-.lang-fill.native {
-    background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
-}
-
-.lang-code {
-    font-size: 0.65rem;
-    font-weight: 700;
-    color: var(--text-muted);
-    min-width: 18px;
-}
-
-.lang-code.native {
-    color: var(--accent-secondary);
-}
-
-.credentials-divider {
-    width: 1px;
-    height: 24px;
-    background: var(--bg-tertiary);
-}
-
-.credentials-education {
-    display: flex;
-    align-items: center;
-    gap: var(--space-xs);
-}
-
-.edu-icon {
-    font-size: 0.9rem;
-    opacity: 0.8;
-}
-
-.edu-text {
-    font-size: 0.8rem;
-    color: var(--text-muted);
+.card-label {
+    font-size: 0.85rem;
     font-weight: 500;
+    color: var(--text-secondary);
+}
+
+.card-level {
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 2px 6px;
+    background: var(--accent-primary);
+    color: white;
+    border-radius: var(--radius-sm);
+}
+
+.card-level.native {
+    background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+}
+
+.edu-card {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+    padding: var(--space-sm) var(--space-lg);
+}
+
+.edu-card .card-flag {
+    position: absolute;
+    top: var(--space-sm);
+    right: var(--space-sm);
+}
+
+.edu-card {
+    position: relative;
+}
+
+.card-detail {
+    font-size: 0.75rem;
+    color: var(--text-muted);
 }
 
 /* ==========================================================================
@@ -1225,25 +1244,20 @@ img {
         flex-direction: column;
     }
 
-    .cta-credentials {
-        flex-direction: column;
-        gap: var(--space-md);
-        align-items: flex-start;
-    }
-
-    .credentials-languages {
-        flex-wrap: wrap;
+    .quick-info-cards {
         gap: var(--space-sm);
     }
 
-    .credentials-divider {
-        width: 100%;
-        height: 1px;
+    .info-card {
+        padding: var(--space-xs) var(--space-sm);
     }
 
-    .credentials-education {
-        width: 100%;
-        justify-content: center;
+    .card-label {
+        font-size: 0.8rem;
+    }
+
+    .card-level {
+        font-size: 0.65rem;
     }
 }
 
