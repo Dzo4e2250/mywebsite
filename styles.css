@@ -884,6 +884,7 @@ img {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: var(--space-4xl);
+    align-items: start;
 }
 
 .contact-info .section-tag {
