@@ -161,15 +161,15 @@ img {
    ========================================================================== */
 
 .hero {
-    min-height: 100dvh;
+    height: 100dvh;
     display: grid;
     grid-template-columns: 1fr 1fr;
-    align-items: center;
+    align-items: end;
     gap: var(--space-xl);
-    padding: 100px var(--space-xl) var(--space-xl);
+    padding: 80px var(--space-xl) 0;
     max-width: 1400px;
     margin: 0 auto;
-    overflow: hidden;
+    box-sizing: border-box;
 }
 
 .hero-container {
@@ -177,6 +177,7 @@ img {
     display: flex;
     flex-direction: column;
     gap: var(--space-lg);
+    padding-bottom: var(--space-xl);
 }
 
 .hero-badge {
@@ -186,7 +187,7 @@ img {
     padding: var(--space-sm) var(--space-md);
     background: var(--bg-secondary);
     border-radius: var(--radius-full);
-    font-size: 0.85rem;
+    font-size: 1.15rem;
     color: var(--text-secondary);
     margin-bottom: var(--space-md);
 }
@@ -205,7 +206,7 @@ img {
 }
 
 .hero-title {
-    font-size: clamp(2.25rem, 4.5vw, 3.5rem);
+    font-size: clamp(3rem, 6vw, 4.7rem);
     font-weight: 700;
     line-height: 1.1;
     letter-spacing: -0.02em;
@@ -220,7 +221,7 @@ img {
 }
 
 .hero-subtitle {
-    font-size: 1.125rem;
+    font-size: 1.5rem;
     color: var(--text-secondary);
     line-height: 1.6;
     margin-bottom: var(--space-md);
@@ -308,17 +309,19 @@ img {
 /* Hero Visual */
 .hero-visual {
     display: flex;
-    align-items: center;
+    align-items: flex-end;
     justify-content: center;
 }
 
 .hero-image {
     max-width: 100%;
-    max-height: 450px;
+    max-height: calc(100dvh - 40px);
     width: auto;
     height: auto;
     object-fit: contain;
-    border-radius: var(--radius-lg);
+    object-position: bottom;
+    transform: scale(1.15);
+    transform-origin: bottom center;
 }
 
 .visual-card {
@@ -2115,12 +2118,12 @@ img {
 }
 
 .hero-stats .stat-item {
-    text-align: left;
+    text-align: center;
 }
 
 .hero-stats .stat-value {
     display: block;
-    font-size: 1.5rem;
+    font-size: 44px;
     font-weight: 700;
     color: var(--accent-primary);
     line-height: 1.2;
@@ -2574,10 +2577,11 @@ img {
 /* Tech preview visual - clean style */
 .tech-preview {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
+    flex-wrap: wrap;
     align-items: center;
     justify-content: center;
-    gap: var(--space-xs);
+    gap: var(--space-xs) var(--space-sm);
     padding: var(--space-md);
     font-family: var(--font-mono);
 }
@@ -2620,6 +2624,13 @@ img {
     border-radius: var(--radius-md);
     font-size: 1rem;
     font-weight: 700;
+}
+
+.tech-preview-svg {
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    padding: var(--space-sm);
 }
 
 /* Projects More Button */
