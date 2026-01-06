@@ -1011,30 +1011,23 @@ img {
    ========================================================================== */
 
 .footer {
-    background: var(--bg-secondary);
-    padding: var(--space-2xl) var(--space-xl);
+    background: var(--bg-primary);
+    padding: var(--space-xl);
     border-top: 1px solid var(--bg-tertiary);
 }
 
 .footer-container {
     max-width: 1200px;
     margin: 0 auto;
-}
-
-.footer-main {
     display: flex;
     justify-content: space-between;
-    align-items: flex-start;
-    gap: var(--space-2xl);
-    margin-bottom: var(--space-xl);
-    padding-bottom: var(--space-xl);
-    border-bottom: 1px solid var(--bg-tertiary);
+    align-items: center;
 }
 
 .footer-left {
     display: flex;
-    flex-direction: column;
-    gap: var(--space-xs);
+    align-items: center;
+    gap: var(--space-md);
 }
 
 .footer-logo {
@@ -1047,63 +1040,70 @@ img {
     font-size: 0.9rem;
 }
 
-.footer-info {
-    display: flex;
-    gap: var(--space-3xl);
-}
-
-.footer-block {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-sm);
-}
-
-.footer-block-title {
+.footer-right {
     font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+/* ==========================================================================
+   CTA EXTRAS - Languages & Education
+   ========================================================================== */
+
+.cta-extras {
+    display: flex;
+    gap: var(--space-lg);
+    margin-top: var(--space-lg);
+}
+
+.cta-extra-block {
+    flex: 1;
+    background: var(--bg-secondary);
+    padding: var(--space-md);
+    border-radius: var(--radius-md);
+}
+
+.cta-extra-title {
+    display: block;
+    font-size: 0.8rem;
     font-weight: 600;
     color: var(--text-primary);
+    margin-bottom: var(--space-sm);
 }
 
-.footer-languages {
+.cta-languages {
     display: flex;
     flex-wrap: wrap;
-    gap: var(--space-sm);
+    gap: var(--space-xs);
 }
 
-.footer-languages span {
-    font-size: 0.8rem;
+.cta-languages span {
+    font-size: 0.75rem;
     color: var(--text-secondary);
-    padding: var(--space-xs) var(--space-sm);
+    padding: 2px 8px;
     background: var(--bg-card);
     border-radius: var(--radius-sm);
 }
 
-.footer-languages em {
+.cta-languages em {
     font-style: normal;
     font-weight: 600;
     color: var(--accent-primary);
-    margin-left: 4px;
+    margin-left: 3px;
 }
 
-.footer-education {
+.cta-education {
     display: flex;
     flex-direction: column;
     gap: 2px;
 }
 
-.footer-education span {
-    font-size: 0.85rem;
+.cta-education span {
+    font-size: 0.8rem;
     color: var(--text-secondary);
 }
 
-.footer-education .edu-detail {
-    font-size: 0.8rem;
-    color: var(--text-muted);
-}
-
-.footer-bottom {
-    text-align: center;
-    font-size: 0.85rem;
+.cta-education .edu-detail {
+    font-size: 0.75rem;
     color: var(--text-muted);
 }
 
@@ -1192,33 +1192,28 @@ img {
         justify-content: center;
     }
 
-    .footer-main {
+    .footer-container {
         flex-direction: column;
-        gap: var(--space-xl);
+        gap: var(--space-md);
+        text-align: center;
     }
 
     .footer-left {
-        align-items: center;
-        text-align: center;
-    }
-
-    .footer-info {
         flex-direction: column;
-        gap: var(--space-lg);
-        width: 100%;
     }
 
-    .footer-block {
-        align-items: center;
-        text-align: center;
+    .cta-extras {
+        flex-direction: column;
+        gap: var(--space-md);
     }
 
-    .footer-languages {
+    .cta-languages {
         justify-content: center;
     }
 
-    .footer-education {
+    .cta-education {
         align-items: center;
+        text-align: center;
     }
 }
 
