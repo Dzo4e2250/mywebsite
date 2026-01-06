@@ -1011,23 +1011,30 @@ img {
    ========================================================================== */
 
 .footer {
-    background: var(--bg-primary);
-    padding: var(--space-xl);
+    background: var(--bg-secondary);
+    padding: var(--space-2xl) var(--space-xl);
     border-top: 1px solid var(--bg-tertiary);
 }
 
 .footer-container {
     max-width: 1200px;
     margin: 0 auto;
+}
+
+.footer-main {
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: flex-start;
+    gap: var(--space-2xl);
+    margin-bottom: var(--space-xl);
+    padding-bottom: var(--space-xl);
+    border-bottom: 1px solid var(--bg-tertiary);
 }
 
 .footer-left {
     display: flex;
-    align-items: center;
-    gap: var(--space-md);
+    flex-direction: column;
+    gap: var(--space-xs);
 }
 
 .footer-logo {
@@ -1040,7 +1047,62 @@ img {
     font-size: 0.9rem;
 }
 
-.footer-right {
+.footer-info {
+    display: flex;
+    gap: var(--space-3xl);
+}
+
+.footer-block {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+}
+
+.footer-block-title {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.footer-languages {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-sm);
+}
+
+.footer-languages span {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    padding: var(--space-xs) var(--space-sm);
+    background: var(--bg-card);
+    border-radius: var(--radius-sm);
+}
+
+.footer-languages em {
+    font-style: normal;
+    font-weight: 600;
+    color: var(--accent-primary);
+    margin-left: 4px;
+}
+
+.footer-education {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.footer-education span {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+.footer-education .edu-detail {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+.footer-bottom {
+    text-align: center;
     font-size: 0.85rem;
     color: var(--text-muted);
 }
@@ -1130,14 +1192,33 @@ img {
         justify-content: center;
     }
 
-    .footer-container {
+    .footer-main {
         flex-direction: column;
-        gap: var(--space-md);
-        text-align: center;
+        gap: var(--space-xl);
     }
 
     .footer-left {
+        align-items: center;
+        text-align: center;
+    }
+
+    .footer-info {
         flex-direction: column;
+        gap: var(--space-lg);
+        width: 100%;
+    }
+
+    .footer-block {
+        align-items: center;
+        text-align: center;
+    }
+
+    .footer-languages {
+        justify-content: center;
+    }
+
+    .footer-education {
+        align-items: center;
     }
 }
 
