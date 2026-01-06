@@ -1046,65 +1046,87 @@ img {
 }
 
 /* ==========================================================================
-   CTA EXTRAS - Languages & Education
+   CTA CREDENTIALS - Integrated Languages & Education
    ========================================================================== */
 
-.cta-extras {
-    display: flex;
-    gap: var(--space-lg);
+.cta-credentials {
     margin-top: var(--space-lg);
-}
-
-.cta-extra-block {
-    flex: 1;
-    background: var(--bg-secondary);
-    padding: var(--space-md);
-    border-radius: var(--radius-md);
-}
-
-.cta-extra-title {
-    display: block;
-    font-size: 0.8rem;
-    font-weight: 600;
-    color: var(--text-primary);
-    margin-bottom: var(--space-sm);
-}
-
-.cta-languages {
+    padding-top: var(--space-lg);
+    border-top: 1px solid var(--bg-tertiary);
     display: flex;
-    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-lg);
+}
+
+.credentials-languages {
+    display: flex;
+    gap: var(--space-md);
+    flex: 1;
+}
+
+.lang-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: default;
+}
+
+.lang-flag {
+    font-size: 1rem;
+    line-height: 1;
+}
+
+.lang-bar {
+    width: 32px;
+    height: 4px;
+    background: var(--bg-tertiary);
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.lang-fill {
+    height: 100%;
+    background: var(--accent-primary);
+    border-radius: 2px;
+    transition: width 0.5s ease;
+}
+
+.lang-fill.native {
+    background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
+}
+
+.lang-code {
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    min-width: 18px;
+}
+
+.lang-code.native {
+    color: var(--accent-secondary);
+}
+
+.credentials-divider {
+    width: 1px;
+    height: 24px;
+    background: var(--bg-tertiary);
+}
+
+.credentials-education {
+    display: flex;
+    align-items: center;
     gap: var(--space-xs);
 }
 
-.cta-languages span {
-    font-size: 0.75rem;
-    color: var(--text-secondary);
-    padding: 2px 8px;
-    background: var(--bg-card);
-    border-radius: var(--radius-sm);
+.edu-icon {
+    font-size: 0.9rem;
+    opacity: 0.8;
 }
 
-.cta-languages em {
-    font-style: normal;
-    font-weight: 600;
-    color: var(--accent-primary);
-    margin-left: 3px;
-}
-
-.cta-education {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-}
-
-.cta-education span {
+.edu-text {
     font-size: 0.8rem;
-    color: var(--text-secondary);
-}
-
-.cta-education .edu-detail {
-    font-size: 0.75rem;
     color: var(--text-muted);
+    font-weight: 500;
 }
 
 /* ==========================================================================
@@ -1202,18 +1224,25 @@ img {
         flex-direction: column;
     }
 
-    .cta-extras {
+    .cta-credentials {
         flex-direction: column;
         gap: var(--space-md);
+        align-items: flex-start;
     }
 
-    .cta-languages {
+    .credentials-languages {
+        flex-wrap: wrap;
+        gap: var(--space-sm);
+    }
+
+    .credentials-divider {
+        width: 100%;
+        height: 1px;
+    }
+
+    .credentials-education {
+        width: 100%;
         justify-content: center;
-    }
-
-    .cta-education {
-        align-items: center;
-        text-align: center;
     }
 }
 
