@@ -167,6 +167,7 @@ function initExpandableCards() {
         const expandBtn = card.querySelector('.expand-btn');
         const expandBtnLarge = card.querySelector('.expand-btn-large');
         const expandBtnText = card.querySelector('.expand-btn-text');
+        const extraToggle = card.querySelector('.extra-toggle');
 
         // Toggle function
         const toggleExpand = (e) => {
@@ -214,6 +215,9 @@ function initExpandableCards() {
         }
         if (expandBtnText) {
             expandBtnText.addEventListener('click', toggleExpand);
+        }
+        if (extraToggle) {
+            extraToggle.addEventListener('click', toggleExpand);
         }
     });
 }
