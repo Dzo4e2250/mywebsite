@@ -1348,3 +1348,23 @@ async function fetchRepos() {
 
 console.log('%cPozdravljeni!', 'font-size: 20px; font-weight: bold; color: #0d9488;');
 console.log('%cIscete nekoga ki gradi resitve? Kontaktirajte me!', 'font-size: 14px; color: #475569;');
+
+/* ==========================================================================
+   INITIALIZATION
+   ========================================================================== */
+
+document.addEventListener('DOMContentLoaded', function() {
+    initDynamicYears();
+    initScrollAnimations();
+    initSmoothScroll();
+    initNavHighlight();
+    initNavScroll();
+    initFormHandler();
+    initExpandableCards();
+    initModalSystem();
+
+    // Fetch repos only on projects page
+    if (document.getElementById('reposContainer')) {
+        fetchRepos();
+    }
+});
