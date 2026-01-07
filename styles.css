@@ -3196,6 +3196,36 @@ img {
 }
 
 /* ==========================================================================
+   LANGUAGE SWITCHER
+   ========================================================================== */
+
+.lang-switch {
+    font-weight: 600;
+    padding: var(--space-xs) var(--space-sm) !important;
+    border: 1px solid var(--bg-tertiary);
+    border-radius: var(--radius-md);
+    font-size: 0.85rem;
+    transition: all var(--transition-fast);
+}
+
+.lang-switch:hover {
+    background: var(--accent-primary);
+    color: white !important;
+    border-color: var(--accent-primary);
+}
+
+/* Mobile bottom nav language switch */
+.nav-bottom .lang-switch {
+    padding: var(--space-xs) var(--space-sm) !important;
+    font-size: 0.7rem;
+    min-width: auto;
+}
+
+.nav-bottom .lang-switch svg {
+    display: none;
+}
+
+/* ==========================================================================
    TIMELINE EXTRAS - Languages & Education
    ========================================================================== */
 

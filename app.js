@@ -2,7 +2,8 @@
    GEORGE BUILDS THINGS - JavaScript (Clean Version)
    ========================================================================== */
 
-
+// Language detection
+const isEnglish = window.location.pathname.startsWith('/en');
 
 /* ==========================================================================
    DYNAMIC YEARS CALCULATION
@@ -207,12 +208,10 @@ function initExpandableCards() {
             // Update button text if it's the text button
             if (expandBtnText) {
                 const currentText = expandBtnText.textContent;
-                if (currentText.includes('Več')) {
-                    expandBtnText.textContent = 'Skrij podrobnosti ←';
+                if (currentText.includes('Več') || currentText.includes('More')) {
+                    expandBtnText.textContent = isEnglish ? 'Hide details ←' : 'Skrij podrobnosti ←';
                 } else {
-                    expandBtnText.textContent = currentText.includes('vlogi')
-                        ? 'Več o tej vlogi →'
-                        : 'Več o tej poti →';
+                    expandBtnText.textContent = isEnglish ? 'More about this role →' : 'Več o tej vlogi →';
                 }
             }
 
@@ -221,8 +220,8 @@ function initExpandableCards() {
                 const span = expandBtnLarge.querySelector('span');
                 if (span) {
                     span.textContent = isExpanded
-                        ? 'Poglej tehnične podrobnosti'
-                        : 'Skrij podrobnosti';
+                        ? (isEnglish ? 'See technical details' : 'Poglej tehnične podrobnosti')
+                        : (isEnglish ? 'Hide details' : 'Skrij podrobnosti');
                 }
             }
         };
@@ -658,10 +657,412 @@ function initModalSystem() {
         `
     };
 
+    // English modal templates
+    const modalTemplatesEN = {
+        eva: `
+            <div class="modal-header">
+                <h2>Eva Chatbot for eTutee</h2>
+                <p>AI assistant for a Slovenian tutoring company. From n8n prototype to custom FastAPI solution.</p>
+            </div>
+
+            <div class="modal-architecture">
+                <img src="${isEnglish ? '../' : ''}eva-architecture.svg" alt="Eva Chatbot Architecture">
+            </div>
+
+            <div class="modal-block" style="margin-bottom: var(--space-lg);">
+                <h4>🏗️ How it works</h4>
+                <p>
+                    User sends a message through the web interface connected to FastAPI backend via WebSocket - enabling instant response and typing indicator.
+                    When a question arrives, the system first searches for relevant documents in Supabase PostgreSQL database using pgvector extension for vector search.
+                    Found documents together with user's question go to OpenAI API, which generates a response.
+                    Redis handles session management and caching of frequent queries.
+                    If Eva can't answer, it escalates the question to Slack where the team responds - this answer is then saved back to the database for future similar questions.
+                </p>
+            </div>
+
+            <div class="modal-grid">
+                <div class="modal-block">
+                    <h4>🚫 Problem with n8n</h4>
+                    <ul>
+                        <li>3-5 seconds per response (each step = HTTP request)</li>
+                        <li>No real-time feel - like email, not chat</li>
+                        <li>Debugging hell - workflow became spaghetti</li>
+                        <li>Costs would quickly rise with higher volume</li>
+                    </ul>
+                </div>
+
+                <div class="modal-block">
+                    <h4>✅ Custom solution</h4>
+                    <ul>
+                        <li><strong>WebSocket</strong> - instant response, typing indicator</li>
+                        <li><strong>RAG system</strong> - pgvector search for relevant documents</li>
+                        <li><strong>Fine-tuning</strong> - 200 examples for Slovenian tone</li>
+                        <li><strong>Self-learning</strong> - learns from Slack escalations</li>
+                    </ul>
+                </div>
+
+                <div class="modal-block">
+                    <h4>📊 Results</h4>
+                    <ul>
+                        <li>Response time: <strong>&lt;1 second</strong> (was 3-5s)</li>
+                        <li>Escalations: <strong>only 3%</strong> of questions need human</li>
+                        <li>Costs: <strong>€5/month</strong> (would be €20+)</li>
+                        <li>Real-time typing indicator for better UX</li>
+                    </ul>
+                </div>
+
+                <div class="modal-block">
+                    <h4>🛠️ Tech Stack</h4>
+                    <div class="modal-tech-stack">
+                        <span>FastAPI</span>
+                        <span>Python</span>
+                        <span>WebSocket</span>
+                        <span>Redis</span>
+                        <span>Supabase</span>
+                        <span>pgvector</span>
+                        <span>OpenAI</span>
+                        <span>Slack API</span>
+                        <span>Docker</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-lesson">
+                <h4>💡 What I learned</h4>
+                <p>
+                    That low-code isn't always enough. That understanding architecture is more important than knowing syntax.
+                    And that with AI help you can build anything - if you know what you want.
+                </p>
+            </div>
+        `,
+
+        tablespro: `
+            <div class="modal-header">
+                <h2>TablesPro - Nextcloud CRM</h2>
+                <p>Fork of Nextcloud Tables with Monday.com-inspired design. Combination of three tools in one.</p>
+            </div>
+
+            <div class="modal-architecture">
+                <img src="${isEnglish ? '../' : ''}tablespro-architecture.svg" alt="TablesPro Architecture">
+            </div>
+
+            <div class="modal-grid">
+                <div class="modal-block">
+                    <h4>🚫 Problem</h4>
+                    <ul>
+                        <li>For VK Massage I needed a CRM system</li>
+                        <li>Monday.com worked great - until I hit the free tier limit</li>
+                        <li>Paid version too expensive for my scale</li>
+                        <li>Started looking for open source alternatives</li>
+                    </ul>
+                </div>
+
+                <div class="modal-block">
+                    <h4>🔍 Research</h4>
+                    <ul>
+                        <li><strong>NocoDB</strong> - excellent sharing functionality</li>
+                        <li><strong>Nextcloud Tables</strong> - good integration, basic features</li>
+                        <li><strong>Nextcloud Deck</strong> - colleague showed me kanban boards</li>
+                        <li>No solution had everything I needed</li>
+                    </ul>
+                </div>
+
+                <div class="modal-block">
+                    <h4>✅ Solution: Fork + AI</h4>
+                    <ul>
+                        <li>Forked Nextcloud Tables from GitHub</li>
+                        <li>With AI help added Monday.com-like design</li>
+                        <li>Integrated Deck functionalities</li>
+                        <li>Added NocoDB sharing features</li>
+                    </ul>
+                </div>
+
+                <div class="modal-block">
+                    <h4>🎯 Added features</h4>
+                    <ul>
+                        <li><strong>Compact Row Design</strong> - higher data density</li>
+                        <li><strong>Summary Rows</strong> - SUM, AVG, MIN, MAX, COUNT</li>
+                        <li><strong>Column Resize</strong> - drag-to-resize with persistent width</li>
+                        <li><strong>Progress Bars</strong> - visual indicators</li>
+                        <li><strong>Activity Tracking</strong> - change tracking</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="modal-grid">
+                <div class="modal-block">
+                    <h4>🛠️ Tech Stack</h4>
+                    <div class="modal-tech-stack">
+                        <span>Vue.js 2</span>
+                        <span>Pinia</span>
+                        <span>PHP</span>
+                        <span>Nextcloud API</span>
+                        <span>SCSS</span>
+                        <span>Vite</span>
+                    </div>
+                </div>
+
+                <div class="modal-block">
+                    <h4>📊 Result</h4>
+                    <ul>
+                        <li>Complete CRM system for €0/month</li>
+                        <li>100% self-hosted on my server</li>
+                        <li>All features I needed</li>
+                        <li>Open source - anyone can use it</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="modal-lesson">
+                <h4>💡 What I learned</h4>
+                <p>
+                    That if you need something specific, you can take an existing open source solution
+                    and adapt it to your needs. With AI help I could modify Vue.js code
+                    even though I'm not a Vue developer. I understood what I wanted to achieve - AI wrote the code.
+                </p>
+            </div>
+        `,
+
+        webprojects: `
+            <div class="modal-header">
+                <h2>Web Projects</h2>
+                <p>From WordPress sites for clients to custom applications for my own needs. I build what I need.</p>
+            </div>
+
+            <div class="modal-grid">
+                <div class="modal-block">
+                    <h4>🎯 Motivation</h4>
+                    <p>
+                        I didn't wait for someone to teach me. When I needed a website for VK Massage,
+                        I learned WordPress. When I needed an internal application, I built it.
+                    </p>
+                </div>
+
+                <div class="modal-block">
+                    <h4>💆 VK Massage Website</h4>
+                    <ul>
+                        <li><strong>Goal:</strong> Acquire new clients organically</li>
+                        <li><strong>Approach:</strong> WordPress + SEO strategy</li>
+                        <li><strong>Result:</strong> From 14 to 150 clients/month</li>
+                        <li><strong>Conversion:</strong> 70% from free consultations</li>
+                    </ul>
+                </div>
+
+                <div class="modal-block">
+                    <h4>🌐 Other projects</h4>
+                    <ul>
+                        <li><strong>DIY3D.si</strong> - WordPress for 3D printing services</li>
+                        <li><strong>Hosekra sites</strong> - Maintenance and optimization</li>
+                        <li><strong>This site</strong> - Pure HTML/CSS/JS, no frameworks</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="modal-grid">
+                <div class="modal-block">
+                    <h4>🛠️ Tech Stack</h4>
+                    <div class="modal-tech-stack">
+                        <span>WordPress</span>
+                        <span>HTML5</span>
+                        <span>CSS3</span>
+                        <span>JavaScript</span>
+                        <span>PHP</span>
+                        <span>SEO</span>
+                    </div>
+                </div>
+
+                <div class="modal-block">
+                    <h4>📊 Numbers</h4>
+                    <ul>
+                        <li><strong>10+</strong> websites</li>
+                        <li><strong>5+ years</strong> WordPress experience</li>
+                        <li><strong>100%</strong> self-hosted</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="modal-lesson">
+                <h4>💡 What I learned</h4>
+                <p>
+                    That it doesn't matter which tool you use - what matters is solving the problem.
+                    WordPress for marketing sites, custom code for specific needs.
+                    I always choose the right tool for the job, not the newest hype.
+                </p>
+            </div>
+        `,
+
+        automations: `
+            <div class="modal-header">
+                <h2>Automations</h2>
+                <p>Workflows that work instead of me. From CRM integrations to WhatsApp notifications - everything that can be automated.</p>
+            </div>
+
+            <div class="modal-grid">
+                <div class="modal-block">
+                    <h4>🎯 Philosophy</h4>
+                    <p>
+                        If I do something more than twice, I automate it. Time is a limited resource -
+                        why waste it on repetitive tasks?
+                    </p>
+                </div>
+
+                <div class="modal-block">
+                    <h4>⚡ n8n Workflows</h4>
+                    <ul>
+                        <li><strong>Eva Chatbot MVP</strong> - initial prototype before custom solution</li>
+                        <li><strong>CRM integrations</strong> - data synchronization between systems</li>
+                        <li><strong>Email automation</strong> - follow-up sequences</li>
+                        <li><strong>Webhook processing</strong> - real-time event responses</li>
+                    </ul>
+                </div>
+
+                <div class="modal-block">
+                    <h4>📱 WhatsApp & SMS</h4>
+                    <ul>
+                        <li><strong>Client reminders</strong> - automatic messages before appointments</li>
+                        <li><strong>Booking confirmations</strong> - instant notification</li>
+                        <li><strong>Twilio integration</strong> - for SMS campaigns</li>
+                    </ul>
+                </div>
+
+                <div class="modal-block">
+                    <h4>🔄 API Integrations</h4>
+                    <ul>
+                        <li><strong>Slack notifications</strong> - alerting for critical events</li>
+                        <li><strong>Google Sheets</strong> - automatic reports</li>
+                        <li><strong>Custom webhooks</strong> - connecting different systems</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="modal-grid">
+                <div class="modal-block">
+                    <h4>🛠️ Tools</h4>
+                    <div class="modal-tech-stack">
+                        <span>n8n</span>
+                        <span>Make.com</span>
+                        <span>Zapier</span>
+                        <span>Twilio</span>
+                        <span>WhatsApp API</span>
+                        <span>Slack API</span>
+                        <span>Webhooks</span>
+                    </div>
+                </div>
+
+                <div class="modal-block">
+                    <h4>📊 Result</h4>
+                    <ul>
+                        <li><strong>10+ hours/week</strong> saved time</li>
+                        <li><strong>0 forgotten</strong> follow-ups</li>
+                        <li><strong>Real-time</strong> event notifications</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="modal-lesson">
+                <h4>💡 What I learned</h4>
+                <p>
+                    That automation isn't just for big companies. With n8n and Make.com anyone can
+                    build complex workflows without programming. But sometimes low-code isn't enough -
+                    that's when you learn to program (like with Eva chatbot).
+                </p>
+            </div>
+        `,
+
+        selfhosted: `
+            <div class="modal-header">
+                <h2>Self-hosted Stack</h2>
+                <p>15+ services on my own servers. Because why pay monthly subscriptions when you can host yourself?</p>
+            </div>
+
+            <div class="modal-grid">
+                <div class="modal-block">
+                    <h4>🎯 Why self-hosting?</h4>
+                    <ul>
+                        <li><strong>Control</strong> - my data, my infrastructure</li>
+                        <li><strong>Learning</strong> - I understand how everything works</li>
+                        <li><strong>Savings</strong> - €0/month for most services</li>
+                        <li><strong>Flexibility</strong> - I can change anything</li>
+                    </ul>
+                </div>
+
+                <div class="modal-block">
+                    <h4>🐳 Docker Containers</h4>
+                    <ul>
+                        <li><strong>Nextcloud</strong> - cloud storage + TablesPro</li>
+                        <li><strong>WordPress (x4)</strong> - DIY3D, George CV, Hosekra, VK</li>
+                        <li><strong>Open WebUI</strong> - local AI chat with Ollama</li>
+                        <li><strong>phpMyAdmin</strong> - database management</li>
+                        <li><strong>Nginx Proxy Manager</strong> - reverse proxy + SSL</li>
+                    </ul>
+                </div>
+
+                <div class="modal-block">
+                    <h4>🤖 AI & ML Stack</h4>
+                    <ul>
+                        <li><strong>Ollama</strong> - local LLMs (Llama, Mistral)</li>
+                        <li><strong>Open WebUI</strong> - ChatGPT-like interface</li>
+                        <li><strong>n8n</strong> - AI workflow automation</li>
+                        <li><strong>Custom RAG</strong> - vector search with pgvector</li>
+                    </ul>
+                </div>
+
+                <div class="modal-block">
+                    <h4>📊 Monitoring & Backup</h4>
+                    <ul>
+                        <li><strong>Uptime Kuma</strong> - monitoring all services</li>
+                        <li><strong>Duplicati</strong> - automatic backups</li>
+                        <li><strong>Watchtower</strong> - automatic Docker updates</li>
+                        <li><strong>Portainer</strong> - container management UI</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="modal-grid">
+                <div class="modal-block">
+                    <h4>🛠️ Infrastructure</h4>
+                    <div class="modal-tech-stack">
+                        <span>Proxmox</span>
+                        <span>Docker</span>
+                        <span>Linux</span>
+                        <span>UFW</span>
+                        <span>Let's Encrypt</span>
+                        <span>MariaDB</span>
+                        <span>PostgreSQL</span>
+                        <span>Redis</span>
+                    </div>
+                </div>
+
+                <div class="modal-block">
+                    <h4>📈 Statistics</h4>
+                    <ul>
+                        <li><strong>12 years</strong> server uptime</li>
+                        <li><strong>15+</strong> Docker containers</li>
+                        <li><strong>99.9%</strong> availability</li>
+                        <li><strong>€15/month</strong> costs (electricity + internet)</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="modal-lesson">
+                <h4>💡 What I learned</h4>
+                <p>
+                    That self-hosting isn't just for "geeks". It's a practical skill that teaches you how
+                    infrastructure really works. When you host something yourself, you understand backup strategies,
+                    security, networking - everything an IT administrator needs to know.
+                    My server is my best reference.
+                </p>
+            </div>
+        `
+    };
+
+    // Select correct templates based on language
+    const templates = isEnglish ? modalTemplatesEN : modalTemplates;
+
     // Open modal
     function openModal(projectId) {
-        if (modalTemplates[projectId]) {
-            modalContent.innerHTML = modalTemplates[projectId];
+        if (templates[projectId]) {
+            modalContent.innerHTML = templates[projectId];
             modal.classList.add('active');
             document.body.style.overflow = 'hidden';
         }
@@ -732,12 +1133,25 @@ function getLanguageClass(language) {
 
 function formatDate(dateString) {
     const date = new Date(dateString);
-    return date.toLocaleDateString('sl-SI', {
+    return date.toLocaleDateString(isEnglish ? 'en-US' : 'sl-SI', {
         year: 'numeric',
         month: 'short',
         day: 'numeric'
     });
 }
+
+// Localized strings
+const i18n = {
+    noDescription: isEnglish ? 'No description' : 'Brez opisa',
+    updated: isEnglish ? 'Updated:' : 'Posodobljeno:',
+    openOnGitHub: isEnglish ? 'Open on GitHub' : 'Odpri na GitHub',
+    moreAboutRole: isEnglish ? 'More about this role →' : 'Več o tej vlogi →',
+    hideDetails: isEnglish ? 'Hide details ←' : 'Skrij podrobnosti ←',
+    loadingRepos: isEnglish ? 'Loading repositories...' : 'Nalagam repozitorije...',
+    errorLoading: isEnglish ? 'Error loading repositories. Please try again later.' : 'Napaka pri nalaganju repozitorijev. Poskusite znova pozneje.',
+    openGitHubProfile: isEnglish ? 'Open GitHub profile directly' : 'Odpri GitHub profil direktno',
+    noReposFound: isEnglish ? 'No repositories found.' : 'Ni najdenih repozitorijev.'
+};
 
 function createSvgElement(pathData, viewBox = '0 0 24 24') {
     const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
@@ -779,7 +1193,7 @@ function createRepoCard(repo) {
     // Description
     const description = document.createElement('p');
     description.className = 'repo-description';
-    description.textContent = repo.description || 'Brez opisa';
+    description.textContent = repo.description || i18n.noDescription;
 
     // Meta
     const meta = document.createElement('div');
@@ -816,7 +1230,7 @@ function createRepoCard(repo) {
 
     const dateItem = document.createElement('span');
     dateItem.className = 'repo-meta-item';
-    dateItem.textContent = 'Posodobljeno: ' + formatDate(repo.updated_at);
+    dateItem.textContent = i18n.updated + ' ' + formatDate(repo.updated_at);
     meta.appendChild(dateItem);
 
     // Actions
@@ -848,7 +1262,7 @@ function createRepoCard(repo) {
     linkSvg.appendChild(linkPath3);
 
     githubLink.appendChild(linkSvg);
-    githubLink.appendChild(document.createTextNode(' Odpri na GitHub'));
+    githubLink.appendChild(document.createTextNode(' ' + i18n.openOnGitHub));
     actions.appendChild(githubLink);
 
     // Assemble card
@@ -867,7 +1281,7 @@ function showError() {
     const errorDiv = document.createElement('div');
     errorDiv.className = 'repos-error';
     const errorText = document.createElement('p');
-    errorText.textContent = 'Napaka pri nalaganju repozitorijev. Poskusite znova pozneje.';
+    errorText.textContent = i18n.errorLoading;
     const linkWrapper = document.createElement('p');
     linkWrapper.style.marginTop = '1rem';
     const directLink = document.createElement('a');
@@ -876,7 +1290,7 @@ function showError() {
     directLink.rel = 'noopener noreferrer';
     directLink.style.color = 'inherit';
     directLink.style.textDecoration = 'underline';
-    directLink.textContent = 'Odpri GitHub profil direktno';
+    directLink.textContent = i18n.openGitHubProfile;
     linkWrapper.appendChild(directLink);
     errorDiv.appendChild(errorText);
     errorDiv.appendChild(linkWrapper);
@@ -890,7 +1304,7 @@ function showEmpty() {
     const emptyDiv = document.createElement('div');
     emptyDiv.className = 'repos-empty';
     const emptyText = document.createElement('p');
-    emptyText.textContent = 'Ni najdenih repozitorijev.';
+    emptyText.textContent = i18n.noReposFound;
     emptyDiv.appendChild(emptyText);
     reposContainer.appendChild(emptyDiv);
 }
