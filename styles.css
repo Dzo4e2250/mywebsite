@@ -170,6 +170,7 @@ img {
     max-width: 1400px;
     margin: 0 auto;
     box-sizing: border-box;
+    overflow: hidden;
 }
 
 .hero-container {
@@ -311,17 +312,16 @@ img {
     display: flex;
     align-items: flex-end;
     justify-content: center;
+    height: calc(100dvh - 80px);
+    min-height: 0;
 }
 
 .hero-image {
-    max-width: 100%;
-    max-height: calc(100dvh - 40px);
     width: auto;
-    height: auto;
+    max-height: calc(100dvh - 150px);
+    max-width: 100%;
     object-fit: contain;
-    object-position: bottom;
-    transform: scale(1.15);
-    transform-origin: bottom center;
+    object-position: center bottom;
 }
 
 .visual-card {
@@ -1179,6 +1179,7 @@ img {
     .hero-visual {
         order: -1;
         justify-content: center;
+        height: auto;
     }
 
     .hero-image {
