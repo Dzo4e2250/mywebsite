@@ -2,15 +2,7 @@
    GEORGE BUILDS THINGS - JavaScript (Clean Version)
    ========================================================================== */
 
-document.addEventListener('DOMContentLoaded', () => {
-    initDynamicYears();
-    initScrollAnimations();
-    initSmoothScroll();
-    initFormHandler();
-    initNavHighlight();
-    initNavScroll();
-    initExpandableCards();
-});
+
 
 /* ==========================================================================
    DYNAMIC YEARS CALCULATION
@@ -263,6 +255,7 @@ function initExpandableCards() {
 
 function initModalSystem() {
     const modal = document.getElementById('projectModal');
+    if (!modal) return;
     const modalContent = document.getElementById('modalContent');
     const modalClose = modal.querySelector('.modal-close');
 
@@ -701,19 +694,239 @@ function initModalSystem() {
     });
 
     // Close handlers
-    modalClose.addEventListener('click', closeModal);
-    modal.addEventListener('click', (e) => {
-        if (e.target === modal) closeModal();
-    });
+    if (modalClose) {
+        modalClose.addEventListener('click', closeModal);
+    }
+    if (modal) {
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) closeModal();
+        });
+    }
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') closeModal();
     });
 }
 
-// Initialize modal on DOMContentLoaded
-document.addEventListener('DOMContentLoaded', () => {
-    initModalSystem();
-});
+
+/* ==========================================================================
+   GITHUB REPOS
+   ========================================================================== */
+
+const GITHUB_USERNAME = 'Dzo4e2250';
+
+// Language colors mapping
+const languageColors = {
+    'Python': 'lang-python',
+    'JavaScript': 'lang-javascript',
+    'TypeScript': 'lang-typescript',
+    'HTML': 'lang-html',
+    'CSS': 'lang-css',
+    'PHP': 'lang-php',
+    'Shell': 'lang-shell',
+    'Vue': 'lang-vue'
+};
+
+function getLanguageClass(language) {
+    return languageColors[language] || 'lang-default';
+}
+
+function formatDate(dateString) {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('sl-SI', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric'
+    });
+}
+
+function createSvgElement(pathData, viewBox = '0 0 24 24') {
+    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    svg.setAttribute('viewBox', viewBox);
+    svg.setAttribute('fill', 'currentColor');
+    const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    path.setAttribute('d', pathData);
+    svg.appendChild(path);
+    return svg;
+}
+
+function createRepoCard(repo) {
+    const card = document.createElement('article');
+    card.className = 'repo-card';
+
+    // Header
+    const header = document.createElement('div');
+    header.className = 'repo-card-header';
+
+    const icon = document.createElement('div');
+    icon.className = 'repo-icon';
+    const githubSvg = createSvgElement('M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z');
+    icon.appendChild(githubSvg);
+
+    const titleWrapper = document.createElement('div');
+    const title = document.createElement('h3');
+    title.className = 'repo-title';
+    title.textContent = repo.name;
+
+    const visibility = document.createElement('span');
+    visibility.className = 'repo-visibility';
+    visibility.textContent = repo.private ? 'Private' : 'Public';
+
+    titleWrapper.appendChild(title);
+    titleWrapper.appendChild(visibility);
+    header.appendChild(icon);
+    header.appendChild(titleWrapper);
+
+    // Description
+    const description = document.createElement('p');
+    description.className = 'repo-description';
+    description.textContent = repo.description || 'Brez opisa';
+
+    // Meta
+    const meta = document.createElement('div');
+    meta.className = 'repo-meta';
+
+    if (repo.language) {
+        const langItem = document.createElement('span');
+        langItem.className = 'repo-meta-item';
+        const langDot = document.createElement('span');
+        langDot.className = 'repo-language-dot ' + getLanguageClass(repo.language);
+        const langText = document.createTextNode(repo.language);
+        langItem.appendChild(langDot);
+        langItem.appendChild(langText);
+        meta.appendChild(langItem);
+    }
+
+    if (repo.stargazers_count > 0) {
+        const starsItem = document.createElement('span');
+        starsItem.className = 'repo-meta-item';
+        const starSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+        starSvg.setAttribute('width', '16');
+        starSvg.setAttribute('height', '16');
+        starSvg.setAttribute('viewBox', '0 0 24 24');
+        starSvg.setAttribute('fill', 'none');
+        starSvg.setAttribute('stroke', 'currentColor');
+        starSvg.setAttribute('stroke-width', '2');
+        const starPath = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
+        starPath.setAttribute('points', '12,2 15,9 22,9 17,14 19,21 12,17 5,21 7,14 2,9 9,9');
+        starSvg.appendChild(starPath);
+        starsItem.appendChild(starSvg);
+        starsItem.appendChild(document.createTextNode(' ' + repo.stargazers_count));
+        meta.appendChild(starsItem);
+    }
+
+    const dateItem = document.createElement('span');
+    dateItem.className = 'repo-meta-item';
+    dateItem.textContent = 'Posodobljeno: ' + formatDate(repo.updated_at);
+    meta.appendChild(dateItem);
+
+    // Actions
+    const actions = document.createElement('div');
+    actions.className = 'repo-actions';
+
+    const githubLink = document.createElement('a');
+    githubLink.href = repo.html_url;
+    githubLink.target = '_blank';
+    githubLink.rel = 'noopener noreferrer';
+    githubLink.className = 'repo-link';
+
+    const linkSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    linkSvg.setAttribute('viewBox', '0 0 24 24');
+    linkSvg.setAttribute('fill', 'none');
+    linkSvg.setAttribute('stroke', 'currentColor');
+    linkSvg.setAttribute('stroke-width', '2');
+    const linkPath1 = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    linkPath1.setAttribute('d', 'M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6');
+    const linkPath2 = document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
+    linkPath2.setAttribute('points', '15 3 21 3 21 9');
+    const linkPath3 = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+    linkPath3.setAttribute('x1', '10');
+    linkPath3.setAttribute('y1', '14');
+    linkPath3.setAttribute('x2', '21');
+    linkPath3.setAttribute('y2', '3');
+    linkSvg.appendChild(linkPath1);
+    linkSvg.appendChild(linkPath2);
+    linkSvg.appendChild(linkPath3);
+
+    githubLink.appendChild(linkSvg);
+    githubLink.appendChild(document.createTextNode(' Odpri na GitHub'));
+    actions.appendChild(githubLink);
+
+    // Assemble card
+    card.appendChild(header);
+    card.appendChild(description);
+    card.appendChild(meta);
+    card.appendChild(actions);
+
+    return card;
+}
+
+function showError() {
+    const reposContainer = document.getElementById('reposContainer');
+    if (!reposContainer) return;
+    reposContainer.replaceChildren();
+    const errorDiv = document.createElement('div');
+    errorDiv.className = 'repos-error';
+    const errorText = document.createElement('p');
+    errorText.textContent = 'Napaka pri nalaganju repozitorijev. Poskusite znova pozneje.';
+    const linkWrapper = document.createElement('p');
+    linkWrapper.style.marginTop = '1rem';
+    const directLink = document.createElement('a');
+    directLink.href = 'https://github.com/' + GITHUB_USERNAME;
+    directLink.target = '_blank';
+    directLink.rel = 'noopener noreferrer';
+    directLink.style.color = 'inherit';
+    directLink.style.textDecoration = 'underline';
+    directLink.textContent = 'Odpri GitHub profil direktno';
+    linkWrapper.appendChild(directLink);
+    errorDiv.appendChild(errorText);
+    errorDiv.appendChild(linkWrapper);
+    reposContainer.appendChild(errorDiv);
+}
+
+function showEmpty() {
+    const reposContainer = document.getElementById('reposContainer');
+    if (!reposContainer) return;
+    reposContainer.replaceChildren();
+    const emptyDiv = document.createElement('div');
+    emptyDiv.className = 'repos-empty';
+    const emptyText = document.createElement('p');
+    emptyText.textContent = 'Ni najdenih repozitorijev.';
+    emptyDiv.appendChild(emptyText);
+    reposContainer.appendChild(emptyDiv);
+}
+
+async function fetchRepos() {
+    const reposContainer = document.getElementById('reposContainer');
+    if (!reposContainer) return;
+    try {
+        const response = await fetch('https://api.github.com/users/' + GITHUB_USERNAME + '/repos?sort=updated&per_page=100');
+
+        if (!response.ok) {
+            throw new Error('HTTP error! status: ' + response.status);
+        }
+
+        const repos = await response.json();
+
+        if (repos.length === 0) {
+            showEmpty();
+            return;
+        }
+
+        // Filter out forked repos and sort by most recently updated
+        const ownRepos = repos.filter(function(repo) {
+            return !repo.fork;
+        });
+
+        reposContainer.replaceChildren();
+        ownRepos.forEach(function(repo) {
+            reposContainer.appendChild(createRepoCard(repo));
+        });
+
+    } catch (error) {
+        console.error('Error fetching repos:', error);
+        showError();
+    }
+}
 
 /* ==========================================================================
    CONSOLE MESSAGE

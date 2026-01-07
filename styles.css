@@ -107,7 +107,7 @@ img {
 }
 
 .nav-container {
-    max-width: 1200px;
+    max-width: 1400px;
     margin: 0 auto;
     padding: var(--space-md) var(--space-xl);
     display: flex;
@@ -120,6 +120,14 @@ img {
     font-weight: 700;
     color: var(--text-primary);
     text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+}
+
+.nav-logo-img {
+    height: 32px;
+    width: auto;
 }
 
 .accent {
@@ -154,6 +162,11 @@ img {
 .btn-nav:hover {
     background: var(--accent-primary-dark);
     color: white !important;
+}
+
+/* Bottom navigation - hidden on desktop */
+.nav-bottom {
+    display: none;
 }
 
 /* ==========================================================================
@@ -810,7 +823,7 @@ img {
 }
 
 .why-visual {
-    margin-top: 200px; /* Align with AI first mindset card */
+    margin-top: 100px; /* Align with Tech znanje card */
 }
 
 .why-text .section-tag {
@@ -847,6 +860,172 @@ img {
 .why-list svg {
     color: var(--accent-success);
     flex-shrink: 0;
+}
+
+/* Proof Stats */
+.proof-stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--space-lg);
+    margin-bottom: var(--space-3xl);
+}
+
+.proof-stat {
+    text-align: center;
+    padding: var(--space-xl);
+    background: var(--bg-secondary);
+    border-radius: var(--radius-lg);
+}
+
+.proof-number {
+    display: block;
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--accent-primary);
+    line-height: 1;
+    margin-bottom: var(--space-sm);
+}
+
+.proof-label {
+    display: block;
+    font-size: 0.95rem;
+    color: var(--text-primary);
+    font-weight: 500;
+    margin-bottom: var(--space-xs);
+}
+
+.proof-context {
+    display: block;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+/* Pillars Grid */
+.pillars-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-xl);
+}
+
+.pillar-card {
+    background: var(--bg-card);
+    border: 1px solid var(--bg-tertiary);
+    border-radius: var(--radius-lg);
+    padding: var(--space-xl);
+    transition: all var(--transition-base);
+}
+
+.pillar-card:hover {
+    border-color: var(--accent-primary);
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+}
+
+.pillar-icon {
+    font-size: 2rem;
+    margin-bottom: var(--space-md);
+}
+
+.pillar-card h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: var(--space-md);
+    color: var(--text-primary);
+}
+
+.pillar-card ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.pillar-card li {
+    padding: var(--space-sm) 0;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    border-bottom: 1px solid var(--bg-tertiary);
+}
+
+.pillar-card li:last-child {
+    border-bottom: none;
+}
+
+/* Proof Stats Inline (for Why Me section) */
+.proof-stats-inline {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-md);
+    margin-bottom: var(--space-xl);
+}
+
+.proof-stat-inline {
+    padding: var(--space-md);
+    background: var(--bg-secondary);
+    border-radius: var(--radius-md);
+}
+
+.proof-number-inline {
+    display: block;
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--accent-primary);
+    line-height: 1;
+}
+
+.proof-label-inline {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+/* Pillars List */
+.pillars-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+}
+
+.pillar-item {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-lg);
+    padding: var(--space-lg);
+    background: var(--bg-secondary);
+    border: 2px solid var(--bg-tertiary);
+    border-radius: var(--radius-lg);
+    transition: all var(--transition-base);
+    box-shadow: var(--shadow-sm);
+}
+
+.pillar-item:hover {
+    border-color: var(--accent-primary);
+    transform: translateX(8px);
+    box-shadow: var(--shadow-md);
+}
+
+.pillar-icon-sm {
+    font-size: 2rem;
+    flex-shrink: 0;
+    background: var(--bg-card);
+    padding: var(--space-sm);
+    border-radius: var(--radius-md);
+}
+
+.pillar-content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+}
+
+.pillar-content strong {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.pillar-content span {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    line-height: 1.5;
 }
 
 /* Quote Card */
@@ -1201,6 +1380,14 @@ img {
         grid-template-columns: 1fr;
     }
 
+    .proof-stats {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .pillars-grid {
+        grid-template-columns: 1fr;
+    }
+
     .contact-row {
         flex-direction: column;
         align-items: stretch;
@@ -1216,18 +1403,78 @@ img {
 }
 
 @media (max-width: 768px) {
+    /* Top nav - only logo */
     .nav-container {
-        flex-direction: column;
-        gap: var(--space-md);
-    }
-
-    .nav-links {
-        flex-wrap: wrap;
         justify-content: center;
     }
 
+    .nav-links {
+        display: none;
+    }
+
+    /* Bottom navigation bar */
+    .nav-bottom {
+        display: flex;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        z-index: 1000;
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(12px);
+        border-top: 1px solid var(--bg-tertiary);
+        padding: var(--space-sm) var(--space-md);
+        padding-bottom: calc(var(--space-sm) + env(safe-area-inset-bottom));
+        justify-content: space-around;
+        align-items: center;
+        box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.08);
+    }
+
+    .nav-bottom .nav-link {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+        font-size: 0.7rem;
+        color: var(--text-secondary);
+        text-decoration: none;
+        padding: var(--space-xs) var(--space-sm);
+        border-radius: var(--radius-md);
+        transition: all var(--transition-fast);
+    }
+
+    .nav-bottom .nav-link:hover,
+    .nav-bottom .nav-link:active {
+        color: var(--accent-primary);
+        background: var(--gradient-subtle);
+    }
+
+    .nav-bottom .nav-link svg {
+        width: 24px;
+        height: 24px;
+        stroke: currentColor;
+        fill: none;
+        stroke-width: 1.5;
+    }
+
+    .nav-bottom .btn-nav {
+        background: var(--accent-primary);
+        color: white;
+        padding: var(--space-xs) var(--space-md);
+    }
+
+    .nav-bottom .btn-nav:hover {
+        background: var(--accent-secondary);
+        color: white;
+    }
+
+    /* Add padding to body for bottom nav */
+    body {
+        padding-bottom: 80px;
+    }
+
     .hero {
-        padding: 100px var(--space-md) var(--space-xl);
+        padding: 80px var(--space-md) var(--space-xl);
     }
 
     .hero-proof {
@@ -1238,6 +1485,15 @@ img {
     .proof-divider {
         width: 60px;
         height: 1px;
+    }
+
+    .proof-stats {
+        grid-template-columns: 1fr 1fr;
+        gap: var(--space-md);
+    }
+
+    .proof-number {
+        font-size: 2rem;
     }
 
     .project-journey {
@@ -1254,8 +1510,17 @@ img {
     }
 
     .project-stats {
-        flex-wrap: wrap;
-        justify-content: center;
+        flex-wrap: nowrap;
+        justify-content: space-around;
+        gap: var(--space-sm);
+    }
+
+    .project-stats .stat-item {
+        font-size: 0.8rem;
+    }
+
+    .project-stats .stat-value {
+        font-size: 1.1rem;
     }
 
     .footer-container {
@@ -1900,7 +2165,7 @@ img {
 }
 
 .timeline-item[data-expanded="true"] .timeline-details {
-    max-height: 300px;
+    max-height: 600px;
     margin-top: var(--space-md);
 }
 
@@ -2149,8 +2414,17 @@ img {
     }
 
     .hero-stats {
-        flex-direction: column;
-        gap: var(--space-md);
+        flex-direction: row;
+        justify-content: space-around;
+        gap: var(--space-sm);
+    }
+
+    .hero-stats .stat-value {
+        font-size: 28px;
+    }
+
+    .hero-stats .stat-label {
+        font-size: 0.7rem;
     }
 
     .timeline::before {
@@ -2216,8 +2490,9 @@ img {
     /* Metrike - BREZ ozadja, inline */
     .project-featured-card .project-metrics {
         display: flex;
+        flex-wrap: nowrap;
         justify-content: space-around;
-        gap: 0;
+        gap: var(--space-xs);
         background: transparent !important;
         border: none !important;
         padding: 4px 0;
@@ -2229,16 +2504,23 @@ img {
         border: none !important;
         padding: 0;
         text-align: center;
+        flex: 1;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
     }
 
     .project-featured-card .metric-value {
-        font-size: 1.1rem;
+        font-size: 1rem;
         font-weight: 700;
     }
 
     .project-featured-card .metric-label {
-        font-size: 0.65rem;
+        font-size: 0.6rem;
         color: var(--text-muted);
+        white-space: nowrap;
+        line-height: 1.2;
     }
 
     /* Gumb - takoj pod metrikami */
@@ -2251,9 +2533,81 @@ img {
     }
 
     .modal-container {
-        width: 95%;
+        width: 98% !important;
         max-height: 90vh;
-        margin: var(--space-md);
+        margin: var(--space-xs);
+    }
+
+    .modal-content {
+        padding: var(--space-xs) !important;
+        padding-top: var(--space-3xl) !important;
+    }
+
+    .modal-header h2 {
+        font-size: 1.3rem;
+    }
+
+    .modal-close {
+        top: var(--space-sm);
+        right: var(--space-sm);
+        width: 36px;
+        height: 36px;
+    }
+
+    .modal-header p {
+        font-size: 0.95rem;
+    }
+
+    /* Expandable cards - večja max-height na mobilni */
+    .expandable[data-expanded="true"] .card-details {
+        max-height: 2000px;
+    }
+
+    .timeline-item[data-expanded="true"] .timeline-details {
+        max-height: 2000px;
+    }
+
+    .detail-block {
+        width: 100%;
+    }
+
+    .detail-block p,
+    .detail-block li {
+        font-size: 0.9rem;
+    }
+
+    .modal-block {
+        padding: var(--space-xs);
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box;
+    }
+
+    .modal-block li {
+        font-size: 0.85rem;
+        padding-left: var(--space-md);
+    }
+
+    .modal-block p {
+        padding: 0;
+        width: 100%;
+    }
+
+    .modal-architecture {
+        padding: var(--space-xs);
+        margin-bottom: var(--space-md);
+        width: 100% !important;
+    }
+
+    .modal-grid {
+        gap: var(--space-sm);
+        padding: 0;
+        width: 100%;
+    }
+
+    .modal-content > * {
+        width: 100% !important;
+        max-width: 100% !important;
     }
 }
 
