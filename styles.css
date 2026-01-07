@@ -1227,6 +1227,15 @@ img {
 .footer-logo {
     font-size: 1.1rem;
     font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+}
+
+.footer-logo-img {
+    width: 28px;
+    height: 28px;
+    object-fit: contain;
 }
 
 .footer-tagline {
