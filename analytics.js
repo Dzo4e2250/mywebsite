@@ -214,6 +214,28 @@
         }
     }
 
+    // Upsert data to Supabase (insert or update on conflict)
+    async function upsertToSupabase(table, data) {
+        try {
+            const response = await fetch(`${SUPABASE_URL}/rest/v1/${table}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'apikey': SUPABASE_ANON_KEY,
+                    'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+                    'Accept-Profile': 'analytics',
+                    'Content-Profile': 'analytics',
+                    'Prefer': 'resolution=merge-duplicates,return=minimal'
+                },
+                body: JSON.stringify(data)
+            });
+            return response.ok;
+        } catch (e) {
+            console.log('Analytics upsert failed');
+            return false;
+        }
+    }
+
     // Upsert active session
     async function upsertActiveSession() {
         const { os, browser, deviceType } = parseUserAgent();
@@ -520,7 +542,7 @@
         }
     }
 
-    // Send scroll depth (can be called periodically or on unload)
+    // Send scroll depth (can be called periodically or on unload) - uses UPSERT
     function sendScrollDepth(useBeacon = false) {
         if (maxScrollDepth > lastSentScrollDepth) {
             const data = {
@@ -532,13 +554,13 @@
             if (useBeacon) {
                 sendBeaconData('scroll_depth', data);
             } else {
-                sendToSupabase('scroll_depth', data);
+                upsertToSupabase('scroll_depth', data);
             }
             lastSentScrollDepth = maxScrollDepth;
         }
     }
 
-    // Send duration update (can be called periodically or on unload)
+    // Send duration update (can be called periodically or on unload) - uses UPSERT
     function sendDurationUpdate(useBeacon = false) {
         const duration = Math.round((Date.now() - pageStartTime) / 1000);
 
@@ -552,7 +574,7 @@
             if (useBeacon) {
                 sendBeaconData('session_duration', data);
             } else {
-                sendToSupabase('session_duration', data);
+                upsertToSupabase('session_duration', data);
             }
             lastSentDuration = duration;
         }
