@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="sl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spletni projekti | George Ristov</title>
+    <meta name="description" content="Spletni projekti in aplikacije - George Ristov">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://ristov.xyz/portfolio.html">
+    <meta property="og:title" content="Spletni projekti | George Ristov">
+    <meta property="og:description" content="Spletne strani in aplikacije, ki sem jih zgradil za stranke in lastne projekte.">
+    <meta property="og:image" content="https://ristov.xyz/george-optimized.jpg">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://ristov.xyz/portfolio.html">
+    <meta property="twitter:title" content="Spletni projekti | George Ristov">
+    <meta property="twitter:description" content="Spletne strani in aplikacije, ki sem jih zgradil za stranke in lastne projekte.">
+    <meta property="twitter:image" content="https://ristov.xyz/george-optimized.jpg">
+
+    <!-- Schema.org structured data -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "CollectionPage",
+        "name": "Spletni projekti | George Ristov",
+        "description": "Spletne strani in aplikacije, ki sem jih zgradil za stranke in lastne projekte.",
+        "url": "https://ristov.xyz/portfolio.html",
+        "author": {
+            "@type": "Person",
+            "name": "George Ristov",
+            "url": "https://ristov.xyz",
+            "jobTitle": "Sales & Tech Solutions",
+            "sameAs": [
+                "https://www.linkedin.com/in/george-ristov/",
+                "https://github.com/Dzo4e2250"
+            ]
+        }
+    }
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css?v=20260110">
+    <link rel="icon" type="image/png" href="logo-nobacground.png">
+    <link rel="apple-touch-icon" href="logo-nobacground.png">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0d9488">
+    <link rel="alternate" hreflang="sl" href="https://ristov.xyz/portfolio.html" />
+    <link rel="alternate" hreflang="en" href="https://ristov.xyz/en/portfolio.html" />
+    <link rel="alternate" hreflang="x-default" href="https://ristov.xyz/portfolio.html" />
+    <style>
+        .portfolio-hero {
+            padding: calc(var(--space-4xl) + 60px) var(--space-xl) var(--space-3xl);
+            background: var(--bg-secondary);
+            text-align: center;
+        }
+
+        .portfolio-hero .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-sm);
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            margin-bottom: var(--space-xl);
+            transition: color var(--transition-fast);
+        }
+
+        .portfolio-hero .back-link:hover {
+            color: var(--accent-primary);
+        }
+
+        .portfolio-hero .back-link:hover svg {
+            transform: translateX(-4px);
+        }
+
+        .portfolio-hero .back-link svg {
+            transition: transform var(--transition-fast);
+        }
+
+        .portfolio-hero h1 {
+            font-size: clamp(2rem, 5vw, 3rem);
+            font-weight: 700;
+            margin-bottom: var(--space-md);
+        }
+
+        .portfolio-hero p {
+            color: var(--text-secondary);
+            font-size: 1.125rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .portfolio-section {
+            padding: var(--space-3xl) var(--space-xl);
+        }
+
+        .portfolio-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .portfolio-category {
+            margin-bottom: var(--space-4xl);
+        }
+
+        .portfolio-category:last-child {
+            margin-bottom: 0;
+        }
+
+        .category-header {
+            display: flex;
+            align-items: center;
+            gap: var(--space-md);
+            margin-bottom: var(--space-xl);
+        }
+
+        .category-icon {
+            width: 48px;
+            height: 48px;
+            background: var(--gradient-primary);
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .category-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .category-count {
+            background: var(--bg-tertiary);
+            padding: 4px 12px;
+            border-radius: var(--radius-full);
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-left: auto;
+        }
+
+        .portfolio-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: var(--space-xl);
+        }
+
+        .portfolio-card {
+            background: var(--bg-card);
+            border: 1px solid var(--bg-tertiary);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            transition: all var(--transition-base);
+            text-decoration: none;
+            color: inherit;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .portfolio-card:hover {
+            transform: translateY(-6px);
+            box-shadow: var(--shadow-xl);
+            border-color: var(--accent-primary);
+        }
+
+        .portfolio-thumbnail {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 16/10;
+            overflow: hidden;
+            background: var(--bg-tertiary);
+        }
+
+        .portfolio-thumbnail img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: top;
+            transition: transform var(--transition-slow);
+        }
+
+        .portfolio-card:hover .portfolio-thumbnail img {
+            transform: scale(1.05);
+        }
+
+        .portfolio-thumbnail .live-badge {
+            position: absolute;
+            top: var(--space-sm);
+            right: var(--space-sm);
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 4px 10px;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            border-radius: var(--radius-full);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+
+        .portfolio-thumbnail .wip-badge {
+            position: absolute;
+            top: var(--space-sm);
+            right: var(--space-sm);
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 4px 10px;
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            color: white;
+            border-radius: var(--radius-full);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+
+        .portfolio-content {
+            padding: var(--space-lg);
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .portfolio-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: var(--space-sm);
+        }
+
+        .portfolio-desc {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+            flex-grow: 1;
+            margin-bottom: var(--space-md);
+        }
+
+        .portfolio-meta {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-top: var(--space-md);
+            border-top: 1px solid var(--bg-tertiary);
+        }
+
+        .portfolio-domain {
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            color: var(--accent-primary);
+            font-weight: 500;
+        }
+
+        .portfolio-tags {
+            display: flex;
+            gap: var(--space-xs);
+        }
+
+        .portfolio-tag {
+            font-size: 0.7rem;
+            padding: 2px 8px;
+            background: var(--bg-tertiary);
+            border-radius: var(--radius-sm);
+            color: var(--text-muted);
+        }
+
+        .portfolio-placeholder {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: var(--text-muted);
+        }
+
+        @media (max-width: 768px) {
+            .portfolio-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .category-header {
+                flex-wrap: wrap;
+            }
+
+            .category-count {
+                margin-left: 0;
+                margin-top: var(--space-sm);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="nav-container">
+            <a href="/" class="nav-logo"><img src="logo-nobacground.png" alt="Logo" class="nav-logo-img">George Ristov<span class="accent">.</span></a>
+            <div class="nav-links">
+                <a href="/#zgodba" class="nav-link">O meni</a>
+                <a href="/#projekti" class="nav-link">Projekti</a>
+                <a href="/#pot" class="nav-link">Kariera</a>
+                <a href="/#kontakt" class="nav-link btn-nav">Kontakt</a>
+                <a href="/en/portfolio.html" class="nav-link lang-switch">EN</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <section class="portfolio-hero">
+        <a href="/#projekti" class="back-link">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M19 12H5M12 19l-7-7 7-7"/>
+            </svg>
+            Nazaj na projekte
+        </a>
+        <h1>Spletni projekti</h1>
+        <p>Spletne strani in aplikacije, ki sem jih zgradil za stranke in lastne projekte.</p>
+    </section>
+
+    <!-- Portfolio Grid -->
+    <section class="portfolio-section">
+        <div class="portfolio-container">
+
+            <!-- Category: Spletne strani za stranke -->
+            <div class="portfolio-category">
+                <div class="category-header">
+                    <div class="category-icon">🌐</div>
+                    <h2 class="category-title">Spletne strani za stranke</h2>
+                    <span class="category-count">3 projekti</span>
+                </div>
+
+                <div class="portfolio-grid">
+                    <a href="https://hranilnica.si/" target="_blank" class="portfolio-card">
+                        <div class="portfolio-thumbnail">
+                            <img src="screenshots/hranilnica.jpg" alt="Hranilnica.si" loading="lazy">
+                            <span class="live-badge">V živo</span>
+                        </div>
+                        <div class="portfolio-content">
+                            <h3 class="portfolio-title">Hranilnica.si</h3>
+                            <p class="portfolio-desc">Self-storage platforma z digitalnimi ključavnicami, 24/7 dostopom in 4 lokacijami po Sloveniji.</p>
+                            <div class="portfolio-meta">
+                                <span class="portfolio-domain">hranilnica.si</span>
+                                <div class="portfolio-tags">
+                                    <span class="portfolio-tag">WordPress</span>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+
+                    <a href="https://krivec-zavarovanja.si/" target="_blank" class="portfolio-card">
+                        <div class="portfolio-thumbnail">
+                            <img src="screenshots/krivec-zavarovanja.jpg" alt="Krivec Zavarovanja" loading="lazy">
+                            <span class="live-badge">V živo</span>
+                        </div>
+                        <div class="portfolio-content">
+                            <h3 class="portfolio-title">Krivec Zavarovanja</h3>
+                            <p class="portfolio-desc">Zavarovalno svetovanje z 20+ let izkušnjami. SEO optimizacija in Schema.org strukturirani podatki.</p>
+                            <div class="portfolio-meta">
+                                <span class="portfolio-domain">krivec-zavarovanja.si</span>
+                                <div class="portfolio-tags">
+                                    <span class="portfolio-tag">SEO</span>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+
+                    <a href="https://tenerifecars.eu/" target="_blank" class="portfolio-card">
+                        <div class="portfolio-thumbnail">
+                            <img src="screenshots/tenerifecars.jpg" alt="Tenerife Cars" loading="lazy">
+                            <span class="live-badge">V živo</span>
+                        </div>
+                        <div class="portfolio-content">
+                            <h3 class="portfolio-title">Tenerife Cars & Life</h3>
+                            <p class="portfolio-desc">Vodič po Tenerifih - najem avtomobilov in življenje na kanarskem otoku.</p>
+                            <div class="portfolio-meta">
+                                <span class="portfolio-domain">tenerifecars.eu</span>
+                                <div class="portfolio-tags">
+                                    <span class="portfolio-tag">Travel</span>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+
+                </div>
+            </div>
+
+            <!-- Category: Lastni projekti -->
+            <div class="portfolio-category">
+                <div class="category-header">
+                    <div class="category-icon">🚀</div>
+                    <h2 class="category-title">Lastni projekti</h2>
+                    <span class="category-count">2 projekta</span>
+                </div>
+
+                <div class="portfolio-grid">
+                    <a href="https://meolic.eu/" target="_blank" class="portfolio-card">
+                        <div class="portfolio-thumbnail">
+                            <img src="screenshots/meolic.jpg" alt="Meolic" loading="lazy">
+                            <span class="live-badge">V živo</span>
+                        </div>
+                        <div class="portfolio-content">
+                            <h3 class="portfolio-title">Meolic</h3>
+                            <p class="portfolio-desc">Lasten projekt - spletna stran.</p>
+                            <div class="portfolio-meta">
+                                <span class="portfolio-domain">meolic.eu</span>
+                                <div class="portfolio-tags">
+                                    <span class="portfolio-tag">Web</span>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+
+                    <a href="https://ristov.xyz/" target="_blank" class="portfolio-card">
+                        <div class="portfolio-thumbnail">
+                            <img src="screenshots/ristov.jpg" alt="ristov.xyz" loading="lazy">
+                            <span class="live-badge">V živo</span>
+                        </div>
+                        <div class="portfolio-content">
+                            <h3 class="portfolio-title">ristov.xyz</h3>
+                            <p class="portfolio-desc">Osebna portfolio stran z večjezično podporo, analitiko in admin panelom.</p>
+                            <div class="portfolio-meta">
+                                <span class="portfolio-domain">ristov.xyz</span>
+                                <div class="portfolio-tags">
+                                    <span class="portfolio-tag">Portfolio</span>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Category: V razvoju -->
+            <div class="portfolio-category">
+                <div class="category-header">
+                    <div class="category-icon">🔧</div>
+                    <h2 class="category-title">V razvoju</h2>
+                    <span class="category-count">2 projekta</span>
+                </div>
+
+                <div class="portfolio-grid">
+                    <a href="https://etutee.ristov.xyz/" target="_blank" class="portfolio-card">
+                        <div class="portfolio-thumbnail">
+                            <img src="screenshots/etutee.jpg" alt="Eva Chatbot" loading="lazy">
+                            <span class="live-badge">V živo</span>
+                        </div>
+                        <div class="portfolio-content">
+                            <h3 class="portfolio-title">Eva Chatbot</h3>
+                            <p class="portfolio-desc">AI asistentka za tutorsko podjetje. Od n8n prototipa do custom FastAPI rešitve.</p>
+                            <div class="portfolio-meta">
+                                <span class="portfolio-domain">etutee.ristov.xyz</span>
+                                <div class="portfolio-tags">
+                                    <span class="portfolio-tag">AI</span>
+                                    <span class="portfolio-tag">FastAPI</span>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+
+                    <a href="https://nikrmanapesnica.si/" target="_blank" class="portfolio-card">
+                        <div class="portfolio-thumbnail">
+                            <img src="screenshots/nikrmana.jpg" alt="Nikrmana" loading="lazy">
+                            <span class="wip-badge">V razvoju</span>
+                        </div>
+                        <div class="portfolio-content">
+                            <h3 class="portfolio-title">Nikrmana</h3>
+                            <p class="portfolio-desc">Zavod za dvig zavesti - spletna stran v razvoju.</p>
+                            <div class="portfolio-meta">
+                                <span class="portfolio-domain">nikrmanapesnica.si</span>
+                                <div class="portfolio-tags">
+                                    <span class="portfolio-tag">Zavod</span>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-left">
+                <span class="footer-logo"><img src="logo-nobacground.png" alt="Logo" class="footer-logo-img">George Ristov<span class="accent">.</span></span>
+                <span class="footer-tagline">Samo domišljija je lahko omejitev.</span>
+            </div>
+            <div class="footer-right">
+                <span>2026 · Zgrajeno z AI pomočjo, ker tako delam.</span>
+                <a href="#" onclick="showCookieSettings(); return false;" class="footer-cookie-link">Upravljaj piškotke</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="app.js?v=20260107fix"></script>
+    <script src="cookie-consent.js?v=20260118"></script>
+
+    <!-- Bottom Navigation (Mobile Only) -->
+    <nav class="nav-bottom">
+        <a href="/#zgodba" class="nav-link">
+            <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            <span>O meni</span>
+        </a>
+        <a href="/#projekti" class="nav-link">
+            <svg viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+            <span>Projekti</span>
+        </a>
+        <a href="/#pot" class="nav-link">
+            <svg viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+            <span>Kariera</span>
+        </a>
+        <a href="/#kontakt" class="nav-link btn-nav">
+            <svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            <span>Kontakt</span>
+        </a>
+        <a href="/en/portfolio.html" class="nav-link lang-switch">EN</a>
+    </nav>
+</body>
+</html>

@@ -87,12 +87,72 @@
         return countryNames[code.toUpperCase()] || code;
     }
 
-    // Fetch geolocation data with fallbacks
+    // Get only IP address (for use with GPS location)
+    async function getIPOnly() {
+        try {
+            const r = await fetch('https://www.cloudflare.com/cdn-cgi/trace');
+            if (r.ok) {
+                const text = await r.text();
+                const match = text.match(/ip=([^\n]+)/);
+                if (match && match[1]) return match[1];
+            }
+        } catch(e) {}
+
+        // Try ipwho.is as fallback
+        try {
+            const r = await fetch('https://ipwho.is/');
+            if (r.ok) {
+                const data = await r.json();
+                if (data.ip) return data.ip;
+            }
+        } catch(e) {}
+
+        return 'Unknown';
+    }
+
+    // Try Browser Geolocation API
+    async function tryBrowserGeolocation() {
+        if (!navigator.geolocation) return null;
+
+        try {
+            const position = await new Promise((resolve, reject) => {
+                navigator.geolocation.getCurrentPosition(resolve, reject, {
+                    enableHighAccuracy: false,
+                    timeout: 5000,
+                    maximumAge: 300000 // Cache for 5 minutes
+                });
+            });
+
+            const ip = await getIPOnly();
+
+            return {
+                ip: ip,
+                country_name: 'GPS',
+                city: 'GPS',
+                latitude: position.coords.latitude,
+                longitude: position.coords.longitude,
+                accuracy: Math.round(position.coords.accuracy),
+                location_type: 'gps'
+            };
+        } catch (e) {
+            // User denied or error - return null to use IP fallback
+            return null;
+        }
+    }
+
+    // Fetch geolocation data with GPS first, then IP fallback
     async function fetchGeoData() {
-        // Try full geolocation APIs first (they give IP + location)
+        // 1. First try Browser Geolocation API (GPS)
+        const gpsData = await tryBrowserGeolocation();
+        if (gpsData) {
+            geoData = gpsData;
+            return geoData;
+        }
+
+        // 2. Fallback: IP-based geolocation
         const apis = [
-            { url: 'https://ipwho.is/', transform: (d) => ({ ip: d.ip, country_name: d.country, city: d.city }) },
-            { url: 'https://ipapi.co/json/', transform: (d) => ({ ip: d.ip, country_name: d.country_name, city: d.city }) }
+            { url: 'https://ipwho.is/', transform: (d) => ({ ip: d.ip, country_name: d.country, city: d.city, location_type: 'ip' }) },
+            { url: 'https://ipapi.co/json/', transform: (d) => ({ ip: d.ip, country_name: d.country_name, city: d.city, location_type: 'ip' }) }
         ];
 
         for (const api of apis) {
@@ -106,7 +166,7 @@
             } catch (e) { continue; }
         }
 
-        // Fallback: Get IP from Cloudflare, then location from ip-api.com
+        // 3. Final fallback: Get IP from Cloudflare, then location from ip-api.com
         try {
             const r = await fetch('https://www.cloudflare.com/cdn-cgi/trace');
             if (r.ok) {
@@ -114,24 +174,22 @@
                 const match = text.match(/ip=([^\n]+)/);
                 if (match && match[1]) {
                     const ip = match[1];
-                    // Try to get location for this IP
                     try {
                         const locR = await fetch(`https://ip-api.com/json/${ip}?fields=country,city`);
                         if (locR.ok) {
                             const locData = await locR.json();
-                            geoData = { ip: ip, country_name: locData.country || 'Unknown', city: locData.city || 'Unknown' };
+                            geoData = { ip: ip, country_name: locData.country || 'Unknown', city: locData.city || 'Unknown', location_type: 'ip' };
                             return geoData;
                         }
                     } catch(e) {}
-                    // If location lookup fails, return IP with country name from code
                     const locMatch = text.match(/loc=([^\n]+)/);
-                    geoData = { ip: ip, country_name: locMatch ? getCountryName(locMatch[1]) : 'Unknown', city: 'Unknown' };
+                    geoData = { ip: ip, country_name: locMatch ? getCountryName(locMatch[1]) : 'Unknown', city: 'Unknown', location_type: 'ip' };
                     return geoData;
                 }
             }
         } catch(e) {}
 
-        return { country_name: 'Unknown', city: 'Unknown', ip: 'Unknown' };
+        return { country_name: 'Unknown', city: 'Unknown', ip: 'Unknown', location_type: 'ip' };
     }
 
     // Send data to Supabase (analytics schema)
@@ -227,14 +285,24 @@
     // Send Discord notification
     async function sendDiscordNotification(data) {
         try {
-            // Check if this IP has a label
+            // Check if this IP has a label (known user)
             const ipLabel = await getIPLabel(data.ip_address);
+
+            // Skip notification for labeled IPs (known users like site owner)
+            if (ipLabel) {
+                console.log('Skipping Discord notification for known user:', ipLabel);
+                return;
+            }
 
             // Build title with label if exists
             let title = '🟢 LIVE obiskovalec na ristov.xyz';
             if (ipLabel) {
                 title = `🟢 ${ipLabel} je na ristov.xyz`;
             }
+
+            // Determine location display
+            let locationValue = `${data.city || 'Unknown'}, ${data.country || 'Unknown'}`;
+            let locationType = data.location_type === 'gps' ? '📍 GPS' : '🌐 IP';
 
             const embed = {
                 title: title,
@@ -244,11 +312,23 @@
                     { name: '💻 Naprava', value: data.device_type || 'Unknown', inline: true },
                     { name: '🖥️ OS', value: data.os || 'Unknown', inline: true },
                     { name: '🌐 Brskalnik', value: data.browser || 'Unknown', inline: true },
-                    { name: '🌍 Lokacija', value: `${data.city || 'Unknown'}, ${data.country || 'Unknown'}`, inline: true },
+                    { name: '🌍 Lokacija', value: locationValue, inline: true },
+                    { name: '📡 Tip lokacije', value: locationType, inline: true },
                     { name: '⏰ Čas', value: new Date().toLocaleString('sl-SI'), inline: true }
                 ],
                 timestamp: new Date().toISOString()
             };
+
+            // Add GPS coordinates with Google Maps link if available
+            if (data.latitude && data.longitude) {
+                const mapsUrl = `https://maps.google.com/?q=${data.latitude},${data.longitude}`;
+                const accuracy = data.location_accuracy ? ` (±${data.location_accuracy}m)` : '';
+                embed.fields.push({
+                    name: '📍 GPS Koordinate',
+                    value: `[${data.latitude.toFixed(5)}, ${data.longitude.toFixed(5)}](${mapsUrl})${accuracy}`,
+                    inline: false
+                });
+            }
 
             // Add IP with label info
             if (data.ip_address && data.ip_address !== 'Unknown') {
@@ -320,6 +400,10 @@
             screen_height: window.screen.height,
             country: geo.country_name || null,
             city: geo.city || null,
+            latitude: geo.latitude || null,
+            longitude: geo.longitude || null,
+            location_accuracy: geo.accuracy || null,
+            location_type: geo.location_type || 'ip',
             is_entry: isFirstPageInSession
         };
 
