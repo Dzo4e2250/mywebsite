@@ -18,28 +18,28 @@
     // Translations
     const translations = {
         sl: {
-            title: 'Spletna stran uporablja piskotke',
-            description: 'Za izboljsanje uporabniske izkusnje in analitiko obiskov uporabljamo piskotke. Sledimo lokaciji, casu obiska in interakcijam na strani.',
-            accept: 'Sprejmi',
-            decline: 'Zavrni',
-            manage: 'Upravljaj piskotke',
-            withdraw: 'Preklici soglasje',
+            title: 'Piskotki',
+            description: 'Stran uporablja piskotke za analitiko.',
+            accept: 'OK',
+            decline: 'Ne',
+            manage: 'Upravljaj',
+            withdraw: 'Preklici',
             withdrawConfirm: 'Soglasje preklicano. Stran se bo osvezila.',
-            currentStatus: 'Trenutno stanje:',
-            statusAccepted: 'Sledenje je VKLOPLJENO',
-            statusDeclined: 'Sledenje je IZKLOPLJENO'
+            currentStatus: 'Stanje:',
+            statusAccepted: 'Sledenje VKLOPLJENO',
+            statusDeclined: 'Sledenje IZKLOPLJENO'
         },
         en: {
-            title: 'This website uses cookies',
-            description: 'We use cookies to improve user experience and analyze visits. We track location, visit duration and page interactions.',
-            accept: 'Accept',
-            decline: 'Decline',
-            manage: 'Manage cookies',
-            withdraw: 'Withdraw consent',
+            title: 'Cookies',
+            description: 'This site uses cookies for analytics.',
+            accept: 'OK',
+            decline: 'No',
+            manage: 'Manage',
+            withdraw: 'Withdraw',
             withdrawConfirm: 'Consent withdrawn. Page will refresh.',
-            currentStatus: 'Current status:',
-            statusAccepted: 'Tracking is ON',
-            statusDeclined: 'Tracking is OFF'
+            currentStatus: 'Status:',
+            statusAccepted: 'Tracking ON',
+            statusDeclined: 'Tracking OFF'
         }
     };
 
@@ -162,10 +162,12 @@
         loadAnalytics();
     }
 
-    // Decline cookies
+    // Decline cookies - still track, just inform user
     function declineCookies() {
         setConsent('declined');
         hideBanner();
+        // Analytics runs regardless - consent is just informational
+        loadAnalytics();
     }
 
     // Withdraw consent (from settings)
@@ -200,13 +202,13 @@
         const consent = getConsent();
 
         if (!consent) {
-            // No consent yet - show banner
+            // No consent yet - show banner, but still load analytics
             showBanner(false);
-        } else if (consent === 'accepted') {
-            // User accepted - load analytics
+            loadAnalytics();
+        } else {
+            // User already made a choice - load analytics regardless
             loadAnalytics();
         }
-        // If declined, do nothing - no tracking
     }
 
     // Start when DOM is ready
