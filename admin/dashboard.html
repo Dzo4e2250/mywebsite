@@ -1,0 +1,2091 @@
+<!DOCTYPE html>
+<html lang="sl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard | ristov.xyz Admin</title>
+    <link rel="icon" type="image/png" href="../logo-nobacground.png">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', system-ui, sans-serif; background: #0f0f1a; min-height: 100vh; color: #fff; }
+        .navbar { background: rgba(255,255,255,0.05); border-bottom: 1px solid rgba(255,255,255,0.1); padding: 16px 24px; display: flex; justify-content: space-between; align-items: center; }
+        .navbar h1 { font-size: 1.4rem; display: flex; align-items: center; gap: 10px; }
+        .navbar h1 span { color: #4ade80; }
+        .nav-links { display: flex; gap: 16px; align-items: center; }
+        .nav-link { color: rgba(255,255,255,0.6); text-decoration: none; padding: 8px 12px; border-radius: 6px; font-size: 0.9rem; transition: all 0.2s; }
+        .nav-link:hover, .nav-link.active { color: #fff; background: rgba(255,255,255,0.1); }
+        .btn-logout { background: rgba(239,68,68,0.2); border: 1px solid rgba(239,68,68,0.5); color: #ef4444; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-size: 0.9rem; }
+        .container { max-width: 1400px; margin: 0 auto; padding: 24px; }
+
+        /* Tabs */
+        .tabs { display: flex; gap: 8px; margin-bottom: 24px; flex-wrap: wrap; }
+        .tab { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: rgba(255,255,255,0.6); padding: 10px 20px; border-radius: 8px; cursor: pointer; font-size: 0.9rem; transition: all 0.2s; }
+        .tab:hover { background: rgba(255,255,255,0.1); color: #fff; }
+        .tab.active { background: rgba(74,222,128,0.2); border-color: rgba(74,222,128,0.5); color: #4ade80; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        .live-section { background: linear-gradient(135deg, rgba(74,222,128,0.1) 0%, rgba(34,197,94,0.1) 100%); border: 1px solid rgba(74,222,128,0.3); border-radius: 12px; padding: 24px; margin-bottom: 24px; }
+        .live-header { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+        .live-dot { width: 12px; height: 12px; background: #4ade80; border-radius: 50%; animation: pulse 2s infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+        .live-count { font-size: 3rem; font-weight: 700; color: #4ade80; }
+        .live-visitors { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 16px; }
+        .visitor-card { background: rgba(255,255,255,0.05); border-radius: 8px; padding: 12px 16px; font-size: 0.85rem; }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; margin-bottom: 24px; }
+        .stat-card { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 20px; }
+        .stat-card .label { color: rgba(255,255,255,0.6); font-size: 0.85rem; margin-bottom: 8px; }
+        .stat-card .value { font-size: 1.8rem; font-weight: 700; }
+        .stat-card .sub { font-size: 0.75rem; color: rgba(255,255,255,0.4); margin-top: 4px; }
+        .charts-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 24px; margin-bottom: 24px; }
+        @media (max-width: 900px) { .charts-grid { grid-template-columns: 1fr; } }
+        .chart-card { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 20px; }
+        .chart-card h3 { margin-bottom: 16px; font-size: 1rem; color: rgba(255,255,255,0.8); }
+        .table-section { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 20px; margin-bottom: 24px; }
+        .table-section h3 { margin-bottom: 16px; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { text-align: left; padding: 12px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        th { color: rgba(255,255,255,0.6); font-weight: 500; font-size: 0.85rem; }
+        td { font-size: 0.9rem; }
+        .btn-unblock { background: rgba(74,222,128,0.2); border: 1px solid rgba(74,222,128,0.5); color: #4ade80; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 0.8rem; }
+
+        /* IP Label styles */
+        .ip-label { color: #f59e0b; font-weight: 500; margin-left: 8px; }
+        .ip-label-btn { background: none; border: none; color: rgba(255,255,255,0.4); cursor: pointer; padding: 2px 4px; font-size: 0.8rem; margin-left: 4px; }
+        .ip-label-btn:hover { color: #4ade80; }
+        .ip-container { display: inline-flex; align-items: center; gap: 4px; }
+
+        /* Label modal */
+        .label-modal { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); z-index: 1000; align-items: center; justify-content: center; }
+        .label-modal.active { display: flex; }
+        .label-modal-content { background: #1a1a2e; border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 24px; width: 100%; max-width: 400px; }
+        .label-modal h3 { margin-bottom: 16px; }
+        .label-modal input { width: 100%; padding: 12px; border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; background: rgba(255,255,255,0.05); color: #fff; font-size: 1rem; margin-bottom: 16px; }
+        .label-modal-buttons { display: flex; gap: 8px; justify-content: flex-end; }
+        .label-modal-buttons button { padding: 10px 20px; border-radius: 8px; cursor: pointer; font-size: 0.9rem; }
+        .btn-cancel { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: #fff; }
+        .btn-save { background: #4ade80; border: none; color: #000; font-weight: 600; }
+        .btn-remove { background: rgba(239,68,68,0.2); border: 1px solid rgba(239,68,68,0.5); color: #ef4444; }
+        .loading-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: #0f0f1a; display: flex; align-items: center; justify-content: center; z-index: 1000; }
+        .spinner { width: 50px; height: 50px; border: 3px solid rgba(255,255,255,0.2); border-top-color: #4ade80; border-radius: 50%; animation: spin 1s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* Progress bar for scroll depth */
+        .progress-bar { background: rgba(255,255,255,0.1); border-radius: 4px; height: 8px; overflow: hidden; }
+        .progress-fill { height: 100%; background: linear-gradient(90deg, #4ade80, #22c55e); border-radius: 4px; transition: width 0.3s; }
+
+        /* Badge */
+        .badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: 500; }
+        .badge-green { background: rgba(74,222,128,0.2); color: #4ade80; }
+        .badge-blue { background: rgba(59,130,246,0.2); color: #3b82f6; }
+        .badge-yellow { background: rgba(245,158,11,0.2); color: #f59e0b; }
+        .badge-red { background: rgba(239,68,68,0.2); color: #ef4444; }
+
+        /* Subpage cards */
+        .subpage-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; }
+        .subpage-card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 10px; padding: 16px; }
+        .subpage-card h4 { color: #4ade80; margin-bottom: 12px; font-size: 0.95rem; word-break: break-all; }
+        .subpage-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+        .subpage-stat { text-align: center; }
+        .subpage-stat .num { font-size: 1.2rem; font-weight: 600; }
+        .subpage-stat .lbl { font-size: 0.7rem; color: rgba(255,255,255,0.5); }
+
+        /* Map styles */
+        #visitorsMap { height: 500px; border-radius: 12px; background: #1a1a2e; }
+        .leaflet-popup-content-wrapper { background: #1a1a2e; color: #fff; border-radius: 8px; }
+        .leaflet-popup-tip { background: #1a1a2e; }
+
+        /* Live marker pulse animation */
+        .live-marker {
+            background: #4ade80;
+            border-radius: 50%;
+            box-shadow: 0 0 0 0 rgba(74, 222, 128, 0.7);
+            animation: live-pulse 2s infinite;
+        }
+        @keyframes live-pulse {
+            0% { box-shadow: 0 0 0 0 rgba(74, 222, 128, 0.7); }
+            70% { box-shadow: 0 0 0 20px rgba(74, 222, 128, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(74, 222, 128, 0); }
+        }
+        .map-legend { background: rgba(255,255,255,0.05); border-radius: 8px; padding: 16px; margin-top: 16px; }
+        .legend-item { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+        .legend-dot { width: 12px; height: 12px; border-radius: 50%; }
+        .country-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; margin-top: 16px; }
+        .country-card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; padding: 12px; display: flex; justify-content: space-between; align-items: center; }
+        .country-card .name { display: flex; align-items: center; gap: 8px; }
+        .country-card .flag { font-size: 1.2rem; }
+        .country-card .count { background: rgba(74,222,128,0.2); color: #4ade80; padding: 4px 8px; border-radius: 4px; font-weight: 600; }
+
+        /* IP Detail Modal */
+        .ip-detail-modal { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.85); z-index: 1001; align-items: flex-start; justify-content: center; overflow-y: auto; padding: 40px 20px; }
+        .ip-detail-modal.active { display: flex; }
+        .ip-detail-content { background: #1a1a2e; border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; width: 100%; max-width: 900px; max-height: none; }
+        .ip-detail-header { padding: 24px; border-bottom: 1px solid rgba(255,255,255,0.1); display: flex; justify-content: space-between; align-items: center; }
+        .ip-detail-header h2 { font-size: 1.3rem; display: flex; align-items: center; gap: 12px; }
+        .ip-detail-close { background: none; border: none; color: rgba(255,255,255,0.6); font-size: 1.5rem; cursor: pointer; padding: 8px; }
+        .ip-detail-close:hover { color: #fff; }
+        .ip-detail-body { padding: 24px; }
+        .ip-detail-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 16px; margin-bottom: 24px; }
+        .ip-detail-stat { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 10px; padding: 16px; text-align: center; }
+        .ip-detail-stat .num { font-size: 1.6rem; font-weight: 700; color: #4ade80; }
+        .ip-detail-stat .lbl { font-size: 0.75rem; color: rgba(255,255,255,0.5); margin-top: 4px; }
+        .ip-detail-section { margin-bottom: 24px; }
+        .ip-detail-section h3 { font-size: 1rem; margin-bottom: 16px; color: rgba(255,255,255,0.8); display: flex; align-items: center; gap: 8px; }
+        .ip-timeline { max-height: 400px; overflow-y: auto; }
+        .ip-timeline-item { display: flex; gap: 16px; padding: 12px 16px; background: rgba(255,255,255,0.02); border-radius: 8px; margin-bottom: 8px; border-left: 3px solid #4ade80; }
+        .ip-timeline-item:hover { background: rgba(255,255,255,0.05); }
+        .ip-timeline-time { min-width: 140px; font-size: 0.85rem; color: rgba(255,255,255,0.5); }
+        .ip-timeline-page { flex: 1; font-weight: 500; color: #4ade80; }
+        .ip-timeline-meta { display: flex; gap: 16px; font-size: 0.8rem; color: rgba(255,255,255,0.4); }
+        .ip-timeline-meta span { display: flex; align-items: center; gap: 4px; }
+        .ip-clicks-list { display: flex; flex-wrap: wrap; gap: 8px; }
+        .ip-click-item { background: rgba(59,130,246,0.15); border: 1px solid rgba(59,130,246,0.3); padding: 6px 12px; border-radius: 6px; font-size: 0.85rem; }
+        .ip-sessions-list { display: flex; flex-direction: column; gap: 8px; }
+        .ip-session-item { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; padding: 12px 16px; }
+        .ip-session-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+        .ip-session-pages { font-size: 0.85rem; color: rgba(255,255,255,0.6); }
+        .clickable-row { cursor: pointer; transition: background 0.2s; }
+        .clickable-row:hover { background: rgba(74,222,128,0.1); }
+    </style>
+</head>
+<body>
+    <div class="loading-overlay" id="loadingOverlay"><div class="spinner"></div></div>
+
+    <!-- IP Label Modal -->
+    <div class="label-modal" id="labelModal">
+        <div class="label-modal-content">
+            <h3>Označi IP naslov</h3>
+            <p style="color:rgba(255,255,255,0.6);margin-bottom:16px;font-size:0.9rem">IP: <code id="labelModalIP" style="background:rgba(255,255,255,0.1);padding:2px 8px;border-radius:4px"></code></p>
+            <input type="text" id="labelInput" placeholder="Ime (npr. Jaz, Mama, Služba...)" maxlength="30">
+            <div class="label-modal-buttons">
+                <button class="btn-remove" id="labelRemoveBtn" style="display:none" onclick="removeIPLabel()">Odstrani</button>
+                <button class="btn-cancel" onclick="closeLabelModal()">Prekliči</button>
+                <button class="btn-save" onclick="saveIPLabel()">Shrani</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- IP Detail Modal -->
+    <div class="ip-detail-modal" id="ipDetailModal">
+        <div class="ip-detail-content">
+            <div class="ip-detail-header">
+                <h2>
+                    <code id="ipDetailIP" style="background:rgba(74,222,128,0.2);padding:4px 12px;border-radius:6px;color:#4ade80"></code>
+                    <span id="ipDetailLabel" class="ip-label" style="display:none"></span>
+                </h2>
+                <button class="ip-detail-close" onclick="closeIPDetailModal()">&times;</button>
+            </div>
+            <div class="ip-detail-body">
+                <div class="ip-detail-stats" id="ipDetailStats"></div>
+
+                <div class="ip-detail-section">
+                    <h3>Časovnica obiskov</h3>
+                    <div class="ip-timeline" id="ipDetailTimeline"></div>
+                </div>
+
+                <div class="ip-detail-section" id="ipDetailClicksSection" style="display:none">
+                    <h3>Kliki (kaj je kliknil)</h3>
+                    <div class="ip-clicks-list" id="ipDetailClicks"></div>
+                </div>
+
+                <div class="ip-detail-section" id="ipDetailOutboundSection" style="display:none">
+                    <h3>Zunanje povezave (kam je odšel)</h3>
+                    <div class="ip-clicks-list" id="ipDetailOutbound"></div>
+                </div>
+
+                <div class="ip-detail-section">
+                    <h3>Seje</h3>
+                    <div class="ip-sessions-list" id="ipDetailSessions"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <nav class="navbar">
+        <h1>ristov.xyz <span>Analytics</span></h1>
+        <div class="nav-links">
+            <a href="/" class="nav-link" target="_blank">Ogled strani</a>
+            <button class="btn-logout" onclick="logout()">Odjava</button>
+        </div>
+    </nav>
+    <div class="container">
+        <!-- Tabs -->
+        <div class="tabs">
+            <button class="tab active" data-tab="overview">Obiskovalci</button>
+            <button class="tab" data-tab="map">Zemljevid</button>
+        </div>
+
+        <!-- Overview Tab -->
+        <div id="overview" class="tab-content active">
+            <div class="live-section">
+                <div class="live-header"><div class="live-dot"></div><h2>Trenutno na strani</h2></div>
+                <div class="live-count" id="liveCount">0</div>
+                <div class="live-visitors" id="liveVisitors"></div>
+            </div>
+
+            <!-- Recent Visitors - Main Focus -->
+            <div class="table-section" style="margin-bottom:24px">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+                    <h3 style="display:flex;align-items:center;gap:8px">Zadnji obiskovalci <span style="font-size:0.8rem;color:rgba(255,255,255,0.5)">(klikni za podrobnosti)</span></h3>
+                </div>
+                <table>
+                    <thead><tr>
+                        <th>Obiskovalec</th>
+                        <th>Lokacija</th>
+                        <th>Kdaj</th>
+                        <th>Strani</th>
+                        <th>Cas</th>
+                        <th>Scroll</th>
+                        <th>Naprava</th>
+                    </tr></thead>
+                    <tbody id="recentVisitorsTable"></tbody>
+                </table>
+            </div>
+
+            <!-- Subpages Section -->
+            <div class="table-section">
+                <h3 style="margin-bottom:16px">Podstrani</h3>
+                <div class="subpage-grid" id="subpagesGrid"></div>
+            </div>
+        </div>
+
+        <!-- Map Tab -->
+        <div id="map" class="tab-content">
+            <h2 style="margin-bottom: 24px;">Zemljevid obiskovalcev</h2>
+            <div class="stats-grid" style="margin-bottom: 24px;">
+                <div class="stat-card">
+                    <div class="label" style="display:flex;align-items:center;gap:8px;">
+                        <div class="live-dot"></div> LIVE na zemljevidu
+                    </div>
+                    <div class="value" id="mapLiveCount" style="color:#4ade80">0</div>
+                </div>
+                <div class="stat-card"><div class="label">Države</div><div class="value" id="mapCountries">-</div></div>
+                <div class="stat-card"><div class="label">Mesta</div><div class="value" id="mapCities">-</div></div>
+                <div class="stat-card"><div class="label">Največ obiskov</div><div class="value" id="mapTopCountry">-</div></div>
+            </div>
+            <div id="visitorsMap"></div>
+            <div class="map-legend">
+                <div style="display:flex;gap:24px;margin-bottom:16px;">
+                    <div class="legend-item">
+                        <div class="legend-dot" style="background:rgba(74,222,128,0.4);border:2px solid #22c55e"></div>
+                        <span>Zgodovinski obiski</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-dot live-marker" style="width:14px;height:14px;"></div>
+                        <span>LIVE obiskovalci</span>
+                    </div>
+                </div>
+                <h4 style="margin-bottom: 12px;">Države po obiskih</h4>
+                <div class="country-list" id="countryList"></div>
+            </div>
+        </div>
+
+        <!-- Hidden elements for JS compatibility -->
+        <div style="display:none">
+            <span id="uniqueIPsToday"></span>
+            <span id="uniqueIPsWeek"></span>
+            <span id="uniqueIPsMonth"></span>
+            <span id="myIP"></span>
+            <span id="todayViews"></span>
+            <span id="weekViews"></span>
+            <span id="monthViews"></span>
+            <span id="avgDuration"></span>
+            <span id="avgScroll"></span>
+            <span id="bounceRate"></span>
+            <input type="text" id="ipFilter">
+            <tbody id="visitorsTable"></tbody>
+            <tbody id="activeVisitorsTable"></tbody>
+            <tbody id="topPagesTable"></tbody>
+        </div>
+    </div>
+
+    <script src="../config.js"></script>
+    <script>
+        const SUPABASE_URL = SITE_CONFIG.SUPABASE_URL;
+        const SUPABASE_ANON_KEY = SITE_CONFIG.SUPABASE_ANON_KEY;
+        let token = localStorage.getItem('admin_token');
+        let charts = {};
+        let visitorsMap = null;
+
+        // IP Labels management
+        let ipLabels = JSON.parse(localStorage.getItem('ip_labels') || '{}');
+        let currentLabelIP = null;
+
+        function getIPLabel(ip) {
+            return ipLabels[ip] || null;
+        }
+
+        function openLabelModal(ip) {
+            currentLabelIP = ip;
+            document.getElementById('labelModalIP').textContent = ip;
+            document.getElementById('labelInput').value = ipLabels[ip] || '';
+            document.getElementById('labelRemoveBtn').style.display = ipLabels[ip] ? 'block' : 'none';
+            document.getElementById('labelModal').classList.add('active');
+            document.getElementById('labelInput').focus();
+        }
+
+        function closeLabelModal() {
+            document.getElementById('labelModal').classList.remove('active');
+            currentLabelIP = null;
+        }
+
+        async function saveIPLabel() {
+            const label = document.getElementById('labelInput').value.trim();
+            if (label && currentLabelIP) {
+                // Save to localStorage
+                ipLabels[currentLabelIP] = label;
+                localStorage.setItem('ip_labels', JSON.stringify(ipLabels));
+
+                // Save to database
+                try {
+                    await fetch(SUPABASE_URL + '/rest/v1/ip_labels', {
+                        method: 'POST',
+                        headers: {
+                            'apikey': SUPABASE_ANON_KEY,
+                            'Authorization': 'Bearer ' + token,
+                            'Content-Type': 'application/json',
+                            'Content-Profile': 'analytics',
+                            'Prefer': 'resolution=merge-duplicates'
+                        },
+                        body: JSON.stringify({ ip_address: currentLabelIP, label: label })
+                    });
+                } catch(e) { console.error('Failed to save label to DB:', e); }
+
+                closeLabelModal();
+                // Refresh displays
+                loadVisitors();
+                loadActiveSessions();
+                loadMap();
+            }
+        }
+
+        async function removeIPLabel() {
+            if (currentLabelIP && ipLabels[currentLabelIP]) {
+                // Remove from localStorage
+                delete ipLabels[currentLabelIP];
+                localStorage.setItem('ip_labels', JSON.stringify(ipLabels));
+
+                // Remove from database
+                try {
+                    await fetch(SUPABASE_URL + '/rest/v1/ip_labels?ip_address=eq.' + currentLabelIP, {
+                        method: 'DELETE',
+                        headers: {
+                            'apikey': SUPABASE_ANON_KEY,
+                            'Authorization': 'Bearer ' + token,
+                            'Content-Profile': 'analytics'
+                        }
+                    });
+                } catch(e) { console.error('Failed to remove label from DB:', e); }
+
+                closeLabelModal();
+                // Refresh displays
+                loadVisitors();
+                loadActiveSessions();
+                loadMap();
+            }
+        }
+
+        // Load IP labels from database on init
+        async function loadIPLabelsFromDB() {
+            try {
+                const response = await fetch(SUPABASE_URL + '/rest/v1/ip_labels', {
+                    headers: {
+                        'apikey': SUPABASE_ANON_KEY,
+                        'Authorization': 'Bearer ' + token,
+                        'Accept-Profile': 'analytics'
+                    }
+                });
+                const labels = await response.json();
+                if (Array.isArray(labels)) {
+                    labels.forEach(l => {
+                        ipLabels[l.ip_address] = l.label;
+                    });
+                    localStorage.setItem('ip_labels', JSON.stringify(ipLabels));
+                }
+            } catch(e) { console.error('Failed to load labels from DB:', e); }
+        }
+
+        // Helper function to render IP with label and edit button
+        function renderIP(ip, style = '') {
+            if (!ip || ip === 'Unknown') return '<span style="color:rgba(255,255,255,0.4)">Unknown</span>';
+            const label = getIPLabel(ip);
+            const labelHtml = label ? `<span class="ip-label">(${label})</span>` : '';
+            return `<span class="ip-container">
+                <code style="${style || 'background:rgba(255,255,255,0.1);padding:2px 6px;border-radius:4px'}">${ip}</code>
+                ${labelHtml}
+                <button class="ip-label-btn" onclick="openLabelModal('${ip}')" title="Označi IP">✏️</button>
+            </span>`;
+        }
+
+        // Close modal on escape or click outside
+        document.getElementById('labelModal').addEventListener('click', (e) => {
+            if (e.target.id === 'labelModal') closeLabelModal();
+        });
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeLabelModal();
+            if (e.key === 'Enter' && document.getElementById('labelModal').classList.contains('active')) saveIPLabel();
+        });
+
+        // Tab switching
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                tab.classList.add('active');
+                document.getElementById(tab.dataset.tab).classList.add('active');
+                // Fix map size when switching to map tab
+                if (tab.dataset.tab === 'map' && visitorsMap) {
+                    setTimeout(() => visitorsMap.invalidateSize(), 100);
+                }
+            });
+        });
+
+        // Country code to full name mapping
+        const countryCodeToName = {
+            'AF':'Afganistan','AL':'Albanija','DZ':'Alžirija','AD':'Andora','AO':'Angola','AR':'Argentina','AM':'Armenija','AU':'Avstralija','AT':'Avstrija','AZ':'Azerbajdžan',
+            'BS':'Bahami','BH':'Bahrajn','BD':'Bangladeš','BY':'Belorusija','BE':'Belgija','BZ':'Belize','BJ':'Benin','BT':'Butan','BO':'Bolivija','BA':'Bosna in Hercegovina',
+            'BW':'Bocvana','BR':'Brazilija','BN':'Brunej','BG':'Bolgarija','CA':'Kanada','CL':'Čile','CN':'Kitajska','CO':'Kolumbija','CR':'Kostarika','HR':'Hrvaška',
+            'CU':'Kuba','CY':'Ciper','CZ':'Češka','DK':'Danska','EC':'Ekvador','EG':'Egipt','EE':'Estonija','FI':'Finska','FR':'Francija','DE':'Nemčija',
+            'GR':'Grčija','HU':'Madžarska','IS':'Islandija','IN':'Indija','ID':'Indonezija','IR':'Iran','IQ':'Irak','IE':'Irska','IL':'Izrael','IT':'Italija',
+            'JP':'Japonska','KZ':'Kazahstan','KE':'Kenija','KR':'Južna Koreja','KW':'Kuvajt','LV':'Latvija','LB':'Libanon','LT':'Litva','LU':'Luksemburg','MK':'Severna Makedonija',
+            'MY':'Malezija','MT':'Malta','MX':'Mehika','MD':'Moldavija','MC':'Monako','ME':'Črna gora','MA':'Maroko','NL':'Nizozemska','NZ':'Nova Zelandija','NG':'Nigerija',
+            'NO':'Norveška','PK':'Pakistan','PA':'Panama','PY':'Paragvaj','PE':'Peru','PH':'Filipini','PL':'Poljska','PT':'Portugalska','QA':'Katar','RO':'Romunija',
+            'RU':'Rusija','SA':'Saudova Arabija','RS':'Srbija','SG':'Singapur','SK':'Slovaška','SI':'Slovenija','ZA':'Južna Afrika','ES':'Španija','SE':'Švedska','CH':'Švica',
+            'TW':'Tajvan','TH':'Tajska','TR':'Turčija','UA':'Ukrajina','AE':'ZAE','GB':'Velika Britanija','US':'ZDA','UY':'Urugvaj','UZ':'Uzbekistan','VE':'Venezuela','VN':'Vietnam'
+        };
+        function getCountryFullName(code) {
+            if (!code) return 'Unknown';
+            return countryCodeToName[code.toUpperCase()] || code;
+        }
+
+        async function checkAuth() {
+            if (!token) { window.location.href = 'index.html'; return false; }
+            try {
+                const r = await fetch(SUPABASE_URL + '/auth/v1/user', { headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': 'Bearer ' + token } });
+                if (!r.ok) throw new Error();
+                return true;
+            } catch (e) { localStorage.removeItem('admin_token'); window.location.href = 'index.html'; return false; }
+        }
+
+        async function fetchData(table, query = '') {
+            const r = await fetch(SUPABASE_URL + '/rest/v1/' + table + query, { headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': 'Bearer ' + token, 'Accept-Profile': 'analytics' } });
+            return r.json();
+        }
+
+        async function loadActiveSessions() {
+            try {
+                const sessions = await fetchData('active_sessions', '?order=last_ping.desc');
+                document.getElementById('liveCount').textContent = sessions.length;
+                const container = document.getElementById('liveVisitors');
+                container.innerHTML = '';
+                if (sessions.length === 0) {
+                    container.textContent = 'Ni aktivnih obiskovalcev';
+                } else {
+                    sessions.forEach(s => {
+                        const card = document.createElement('div');
+                        card.className = 'visitor-card';
+                        const ipLabel = getIPLabel(s.ip_address);
+                        const labelBadge = ipLabel ? `<span style="background:#f59e0b;color:#000;padding:2px 8px;border-radius:4px;font-size:0.75rem;font-weight:600;margin-left:8px">${ipLabel}</span>` : '';
+                        card.innerHTML = `<div style="color:#4ade80;font-weight:500">${s.page_url || '/'}${labelBadge}</div>
+                            <div style="color:rgba(255,255,255,0.6);margin-top:4px">${s.device_type || 'Unknown'} · ${s.browser || 'Unknown'} · ${s.city || 'Unknown'}, ${s.country || ''}</div>
+                            <div style="margin-top:4px;font-size:0.8rem">${renderIP(s.ip_address, 'background:rgba(255,255,255,0.1);padding:1px 4px;border-radius:3px')}</div>`;
+                        container.appendChild(card);
+                    });
+                }
+            } catch (e) { console.error(e); }
+        }
+
+        async function loadStats() {
+            const now = new Date();
+            const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate()).toISOString();
+            const weekStart = new Date(now.getTime() - 7*24*60*60*1000).toISOString();
+            const monthStart = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
+
+            try {
+                const [td, wd, md, dur, scroll] = await Promise.all([
+                    fetchData('page_views', '?created_at=gte.' + todayStart + '&select=id,session_id'),
+                    fetchData('page_views', '?created_at=gte.' + weekStart + '&select=id'),
+                    fetchData('page_views', '?created_at=gte.' + monthStart + '&select=id'),
+                    fetchData('session_duration', '?select=duration_seconds'),
+                    fetchData('scroll_depth', '?select=max_depth')
+                ]);
+
+                document.getElementById('todayViews').textContent = td.length;
+                document.getElementById('weekViews').textContent = wd.length;
+                document.getElementById('monthViews').textContent = md.length;
+
+                if (dur.length > 0) {
+                    const avg = dur.reduce((a,b) => a + b.duration_seconds, 0) / dur.length;
+                    document.getElementById('avgDuration').textContent = Math.floor(avg/60) + 'm ' + Math.round(avg%60) + 's';
+                } else { document.getElementById('avgDuration').textContent = '0m 0s'; }
+
+                if (scroll.length > 0) {
+                    const avgScroll = Math.round(scroll.reduce((a,b) => a + b.max_depth, 0) / scroll.length);
+                    document.getElementById('avgScroll').textContent = avgScroll + '%';
+                } else { document.getElementById('avgScroll').textContent = '0%'; }
+
+                // Bounce rate (sessions with only 1 page view)
+                const sessionCounts = {};
+                td.forEach(v => { sessionCounts[v.session_id] = (sessionCounts[v.session_id] || 0) + 1; });
+                const totalSessions = Object.keys(sessionCounts).length;
+                const bounceSessions = Object.values(sessionCounts).filter(c => c === 1).length;
+                const bounceRate = totalSessions > 0 ? Math.round((bounceSessions / totalSessions) * 100) : 0;
+                document.getElementById('bounceRate').textContent = bounceRate + '%';
+
+            } catch (e) { console.error(e); }
+        }
+
+        async function loadCharts() {
+            try {
+                const weekStart = new Date(Date.now() - 7*24*60*60*1000).toISOString();
+                const views = await fetchData('page_views', '?created_at=gte.' + weekStart + '&select=created_at,device_type,browser,os,screen_width,screen_height,country');
+
+                // Views by day
+                const viewsByDay = {};
+                for (let i = 6; i >= 0; i--) { const d = new Date(Date.now() - i*24*60*60*1000); viewsByDay[d.toLocaleDateString('sl-SI', {weekday:'short'})] = 0; }
+                views.forEach(v => { const k = new Date(v.created_at).toLocaleDateString('sl-SI', {weekday:'short'}); if (viewsByDay[k] !== undefined) viewsByDay[k]++; });
+
+                if (charts.views) charts.views.destroy();
+                charts.views = new Chart(document.getElementById('viewsChart'), { type: 'line', data: { labels: Object.keys(viewsByDay), datasets: [{ data: Object.values(viewsByDay), borderColor: '#4ade80', backgroundColor: 'rgba(74,222,128,0.1)', fill: true, tension: 0.4 }] }, options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.1)' } }, x: { grid: { color: 'rgba(255,255,255,0.1)' } } } } });
+
+                // Devices
+                const devices = {}; views.forEach(v => { const d = v.device_type || 'Unknown'; devices[d] = (devices[d]||0) + 1; });
+                if (charts.devices) charts.devices.destroy();
+                charts.devices = new Chart(document.getElementById('devicesChart'), { type: 'doughnut', data: { labels: Object.keys(devices), datasets: [{ data: Object.values(devices), backgroundColor: ['#4ade80','#3b82f6','#f59e0b','#ef4444'] }] }, options: { responsive: true } });
+
+                // Browsers
+                const browsers = {}; views.forEach(v => { const b = v.browser || 'Unknown'; browsers[b] = (browsers[b]||0) + 1; });
+                if (charts.browsers) charts.browsers.destroy();
+                charts.browsers = new Chart(document.getElementById('browsersChart'), { type: 'bar', data: { labels: Object.keys(browsers), datasets: [{ data: Object.values(browsers), backgroundColor: '#3b82f6' }] }, options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.1)' } }, x: { grid: { color: 'rgba(255,255,255,0.1)' } } } } });
+
+                // OS
+                const os = {}; views.forEach(v => { const o = v.os || 'Unknown'; os[o] = (os[o]||0) + 1; });
+                if (charts.os) charts.os.destroy();
+                charts.os = new Chart(document.getElementById('osChart'), { type: 'bar', data: { labels: Object.keys(os), datasets: [{ data: Object.values(os), backgroundColor: '#f59e0b' }] }, options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.1)' } }, x: { grid: { color: 'rgba(255,255,255,0.1)' } } } } });
+
+                // Screen resolutions
+                const screens = {}; views.forEach(v => { const s = v.screen_width + 'x' + v.screen_height; screens[s] = (screens[s]||0) + 1; });
+                const topScreens = Object.entries(screens).sort((a,b)=>b[1]-a[1]).slice(0,6);
+                if (charts.screen) charts.screen.destroy();
+                charts.screen = new Chart(document.getElementById('screenChart'), { type: 'bar', data: { labels: topScreens.map(s=>s[0]), datasets: [{ data: topScreens.map(s=>s[1]), backgroundColor: '#8b5cf6' }] }, options: { responsive: true, indexAxis: 'y', plugins: { legend: { display: false } } } });
+
+                // Countries
+                const countries = {}; views.forEach(v => { const c = v.country || 'Unknown'; countries[c] = (countries[c]||0) + 1; });
+                const topCountries = Object.entries(countries).sort((a,b)=>b[1]-a[1]).slice(0,6);
+                if (charts.country) charts.country.destroy();
+                charts.country = new Chart(document.getElementById('countryChart'), { type: 'doughnut', data: { labels: topCountries.map(c=>c[0]), datasets: [{ data: topCountries.map(c=>c[1]), backgroundColor: ['#4ade80','#3b82f6','#f59e0b','#ef4444','#8b5cf6','#ec4899'] }] }, options: { responsive: true } });
+
+            } catch (e) { console.error(e); }
+        }
+
+        // Load recent visitors with full details for CV-focused view
+        async function loadRecentVisitors() {
+            try {
+                const [views, durations, scrolls] = await Promise.all([
+                    fetchData('page_views', '?select=ip_address,page_url,country,city,device_type,browser,os,created_at,referrer,session_id&order=created_at.desc'),
+                    fetchData('session_duration', '?select=session_id,duration_seconds'),
+                    fetchData('scroll_depth', '?select=session_id,max_depth')
+                ]);
+
+                // Map durations and scrolls by session
+                const sessionDurations = {};
+                durations.forEach(d => {
+                    if (!sessionDurations[d.session_id]) sessionDurations[d.session_id] = 0;
+                    sessionDurations[d.session_id] += d.duration_seconds;
+                });
+                const sessionScrolls = {};
+                scrolls.forEach(s => {
+                    if (!sessionScrolls[s.session_id] || s.max_depth > sessionScrolls[s.session_id]) {
+                        sessionScrolls[s.session_id] = s.max_depth;
+                    }
+                });
+
+                // Group by IP and get most recent visit info
+                const ipData = {};
+                views.forEach(v => {
+                    const ip = v.ip_address || 'Unknown';
+                    if (ip === 'Unknown') return;
+
+                    if (!ipData[ip]) {
+                        ipData[ip] = {
+                            lastVisit: v.created_at,
+                            pages: new Set(),
+                            sessions: new Set(),
+                            country: v.country,
+                            city: v.city,
+                            device: v.device_type,
+                            browser: v.browser,
+                            os: v.os,
+                            referrer: v.referrer,
+                            totalDuration: 0,
+                            maxScroll: 0
+                        };
+                    }
+
+                    ipData[ip].pages.add(v.page_url);
+                    ipData[ip].sessions.add(v.session_id);
+
+                    // Update last visit if newer
+                    if (new Date(v.created_at) > new Date(ipData[ip].lastVisit)) {
+                        ipData[ip].lastVisit = v.created_at;
+                    }
+
+                    // Add duration and scroll for this session
+                    if (sessionDurations[v.session_id]) {
+                        ipData[ip].totalDuration = Math.max(ipData[ip].totalDuration, sessionDurations[v.session_id]);
+                    }
+                    if (sessionScrolls[v.session_id] && sessionScrolls[v.session_id] > ipData[ip].maxScroll) {
+                        ipData[ip].maxScroll = sessionScrolls[v.session_id];
+                    }
+                });
+
+                // Sort by last visit (most recent first)
+                const sorted = Object.entries(ipData)
+                    .sort((a, b) => new Date(b[1].lastVisit) - new Date(a[1].lastVisit))
+                    .slice(0, 20); // Show last 20 visitors
+
+                const tbody = document.getElementById('recentVisitorsTable');
+                tbody.textContent = '';
+
+                if (sorted.length === 0) {
+                    const tr = document.createElement('tr');
+                    const td = document.createElement('td');
+                    td.colSpan = 7;
+                    td.textContent = 'Ni obiskovalcev';
+                    tr.appendChild(td);
+                    tbody.appendChild(tr);
+                    return;
+                }
+
+                sorted.forEach(([ip, data]) => {
+                    const tr = document.createElement('tr');
+                    tr.className = 'clickable-row';
+                    tr.style.cursor = 'pointer';
+                    tr.onclick = () => openIPDetailModal(ip);
+                    tr.title = 'Klikni za podrobnosti';
+
+                    // IP/Label cell
+                    const tdIP = document.createElement('td');
+                    const ipCode = document.createElement('code');
+                    ipCode.style.cssText = 'background:rgba(255,255,255,0.1);padding:2px 6px;border-radius:4px;font-size:0.85rem';
+                    ipCode.textContent = ip;
+                    tdIP.appendChild(ipCode);
+                    const label = getIPLabel(ip);
+                    if (label) {
+                        const labelSpan = document.createElement('span');
+                        labelSpan.className = 'ip-label';
+                        labelSpan.textContent = ' (' + label + ')';
+                        tdIP.appendChild(labelSpan);
+                    }
+                    const editBtn = document.createElement('button');
+                    editBtn.className = 'ip-label-btn';
+                    editBtn.textContent = '✏️';
+                    editBtn.title = 'Označi IP';
+                    editBtn.onclick = (e) => { e.stopPropagation(); openLabelModal(ip); };
+                    tdIP.appendChild(editBtn);
+
+                    // Location cell
+                    const tdLoc = document.createElement('td');
+                    const flag = countryFlags[data.country] || '';
+                    tdLoc.textContent = flag + ' ' + (data.city || '-') + ', ' + (data.country || '-');
+
+                    // When cell - relative time
+                    const tdWhen = document.createElement('td');
+                    const visitDate = new Date(data.lastVisit);
+                    const now = new Date();
+                    const diffMs = now - visitDate;
+                    const diffMins = Math.floor(diffMs / 60000);
+                    const diffHours = Math.floor(diffMs / 3600000);
+                    const diffDays = Math.floor(diffMs / 86400000);
+
+                    let whenText;
+                    if (diffMins < 1) whenText = 'Zdaj';
+                    else if (diffMins < 60) whenText = diffMins + ' min nazaj';
+                    else if (diffHours < 24) whenText = diffHours + ' ur nazaj';
+                    else whenText = diffDays + ' dni nazaj';
+
+                    tdWhen.textContent = whenText;
+                    tdWhen.title = visitDate.toLocaleString('sl-SI');
+                    tdWhen.style.color = diffMins < 60 ? '#4ade80' : 'inherit';
+
+                    // Pages cell
+                    const tdPages = document.createElement('td');
+                    tdPages.textContent = data.pages.size;
+
+                    // Duration cell
+                    const tdDur = document.createElement('td');
+                    const dur = data.totalDuration;
+                    tdDur.textContent = dur > 0 ? Math.floor(dur/60) + 'm ' + (dur%60) + 's' : '-';
+
+                    // Scroll cell
+                    const tdScroll = document.createElement('td');
+                    if (data.maxScroll > 0) {
+                        tdScroll.textContent = data.maxScroll + '%';
+                        tdScroll.style.color = data.maxScroll > 75 ? '#4ade80' : data.maxScroll > 50 ? '#f59e0b' : '#ef4444';
+                    } else {
+                        tdScroll.textContent = '-';
+                    }
+
+                    // Device cell
+                    const tdDevice = document.createElement('td');
+                    tdDevice.textContent = (data.device || '-') + ' / ' + (data.browser || '-');
+                    tdDevice.style.fontSize = '0.85rem';
+
+                    tr.appendChild(tdIP);
+                    tr.appendChild(tdLoc);
+                    tr.appendChild(tdWhen);
+                    tr.appendChild(tdPages);
+                    tr.appendChild(tdDur);
+                    tr.appendChild(tdScroll);
+                    tr.appendChild(tdDevice);
+                    tbody.appendChild(tr);
+                });
+
+            } catch (e) {
+                console.error('Error loading recent visitors:', e);
+            }
+        }
+
+        async function loadTopPages() {
+            try {
+                const [views, scrolls, durations] = await Promise.all([
+                    fetchData('page_views', '?select=page_url'),
+                    fetchData('scroll_depth', '?select=page_url,max_depth'),
+                    fetchData('session_duration', '?select=page_url,duration_seconds')
+                ]);
+
+                // Aggregate data by page
+                const pages = {};
+                views.forEach(v => {
+                    if (!pages[v.page_url]) pages[v.page_url] = { views: 0, scrolls: [], durations: [] };
+                    pages[v.page_url].views++;
+                });
+                scrolls.forEach(s => { if (pages[s.page_url]) pages[s.page_url].scrolls.push(s.max_depth); });
+                durations.forEach(d => { if (pages[d.page_url]) pages[d.page_url].durations.push(d.duration_seconds); });
+
+                const sorted = Object.entries(pages).sort((a,b) => b[1].views - a[1].views).slice(0,10);
+                const tbody = document.getElementById('topPagesTable');
+                tbody.innerHTML = '';
+
+                if (sorted.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="4">Ni podatkov</td></tr>';
+                } else {
+                    sorted.forEach(([page, data]) => {
+                        const avgScroll = data.scrolls.length > 0 ? Math.round(data.scrolls.reduce((a,b)=>a+b,0)/data.scrolls.length) : 0;
+                        const avgDur = data.durations.length > 0 ? data.durations.reduce((a,b)=>a+b,0)/data.durations.length : 0;
+                        const tr = document.createElement('tr');
+                        tr.innerHTML = `<td>${page}</td><td>${data.views}</td><td>${avgScroll}%</td><td>${Math.floor(avgDur/60)}m ${Math.round(avgDur%60)}s</td>`;
+                        tbody.appendChild(tr);
+                    });
+                }
+            } catch (e) { console.error(e); }
+        }
+
+        async function loadSubpages() {
+            try {
+                const [views, scrolls, durations, clicks] = await Promise.all([
+                    fetchData('page_views', '?select=page_url,session_id,is_entry'),
+                    fetchData('scroll_depth', '?select=page_url,max_depth'),
+                    fetchData('session_duration', '?select=page_url,duration_seconds'),
+                    fetchData('clicks', '?select=page_url')
+                ]);
+
+                const pages = {};
+                views.forEach(v => {
+                    if (!pages[v.page_url]) pages[v.page_url] = { views: 0, entries: 0, scrolls: [], durations: [], clicks: 0, sessions: new Set() };
+                    pages[v.page_url].views++;
+                    pages[v.page_url].sessions.add(v.session_id);
+                    if (v.is_entry) pages[v.page_url].entries++;
+                });
+                scrolls.forEach(s => { if (pages[s.page_url]) pages[s.page_url].scrolls.push(s.max_depth); });
+                durations.forEach(d => { if (pages[d.page_url]) pages[d.page_url].durations.push(d.duration_seconds); });
+                clicks.forEach(c => { if (pages[c.page_url]) pages[c.page_url].clicks++; });
+
+                const grid = document.getElementById('subpagesGrid');
+                grid.innerHTML = '';
+
+                Object.entries(pages).sort((a,b)=>b[1].views-a[1].views).forEach(([page, data]) => {
+                    const avgScroll = data.scrolls.length > 0 ? Math.round(data.scrolls.reduce((a,b)=>a+b,0)/data.scrolls.length) : 0;
+                    const avgDur = data.durations.length > 0 ? data.durations.reduce((a,b)=>a+b,0)/data.durations.length : 0;
+
+                    const card = document.createElement('div');
+                    card.className = 'subpage-card';
+                    card.innerHTML = `
+                        <h4>${page}</h4>
+                        <div class="subpage-stats">
+                            <div class="subpage-stat"><div class="num">${data.views}</div><div class="lbl">Obiskov</div></div>
+                            <div class="subpage-stat"><div class="num">${data.sessions.size}</div><div class="lbl">Unikatnih</div></div>
+                            <div class="subpage-stat"><div class="num">${data.entries}</div><div class="lbl">Vstopov</div></div>
+                        </div>
+                        <div style="margin-top:12px">
+                            <div style="display:flex;justify-content:space-between;font-size:0.8rem;margin-bottom:4px">
+                                <span>Scroll globina</span><span>${avgScroll}%</span>
+                            </div>
+                            <div class="progress-bar"><div class="progress-fill" style="width:${avgScroll}%"></div></div>
+                        </div>
+                        <div style="margin-top:8px;display:flex;justify-content:space-between;font-size:0.8rem;color:rgba(255,255,255,0.6)">
+                            <span>Povp. cas: ${Math.floor(avgDur/60)}m ${Math.round(avgDur%60)}s</span>
+                            <span>${data.clicks} klikov</span>
+                        </div>
+                    `;
+                    grid.appendChild(card);
+                });
+
+                if (grid.children.length === 0) {
+                    grid.innerHTML = '<p>Ni podatkov o podstraneh</p>';
+                }
+            } catch (e) { console.error(e); }
+        }
+
+        async function loadBehavior() {
+            try {
+                // Scroll depth chart
+                const scrolls = await fetchData('scroll_depth', '?select=page_url,max_depth');
+                const scrollByPage = {};
+                scrolls.forEach(s => {
+                    if (!scrollByPage[s.page_url]) scrollByPage[s.page_url] = [];
+                    scrollByPage[s.page_url].push(s.max_depth);
+                });
+                const scrollData = Object.entries(scrollByPage).map(([page, depths]) => ({
+                    page,
+                    avg: Math.round(depths.reduce((a,b)=>a+b,0)/depths.length)
+                })).sort((a,b)=>b.avg-a.avg).slice(0,8);
+
+                if (charts.scroll) charts.scroll.destroy();
+                charts.scroll = new Chart(document.getElementById('scrollChart'), {
+                    type: 'bar',
+                    data: {
+                        labels: scrollData.map(d=>d.page),
+                        datasets: [{ data: scrollData.map(d=>d.avg), backgroundColor: '#4ade80' }]
+                    },
+                    options: { responsive: true, indexAxis: 'y', plugins: { legend: { display: false } }, scales: { x: { max: 100 } } }
+                });
+
+                // Duration chart
+                const durations = await fetchData('session_duration', '?select=page_url,duration_seconds');
+                const durByPage = {};
+                durations.forEach(d => {
+                    if (!durByPage[d.page_url]) durByPage[d.page_url] = [];
+                    durByPage[d.page_url].push(d.duration_seconds);
+                });
+                const durData = Object.entries(durByPage).map(([page, durs]) => ({
+                    page,
+                    avg: Math.round(durs.reduce((a,b)=>a+b,0)/durs.length)
+                })).sort((a,b)=>b.avg-a.avg).slice(0,8);
+
+                if (charts.duration) charts.duration.destroy();
+                charts.duration = new Chart(document.getElementById('durationChart'), {
+                    type: 'bar',
+                    data: {
+                        labels: durData.map(d=>d.page),
+                        datasets: [{ data: durData.map(d=>d.avg), backgroundColor: '#3b82f6' }]
+                    },
+                    options: { responsive: true, indexAxis: 'y', plugins: { legend: { display: false } } }
+                });
+
+                // Entry pages
+                const views = await fetchData('page_views', '?is_entry=eq.true&select=page_url');
+                const entries = {};
+                views.forEach(v => { entries[v.page_url] = (entries[v.page_url]||0) + 1; });
+                const total = views.length;
+                const sortedEntries = Object.entries(entries).sort((a,b)=>b[1]-a[1]).slice(0,10);
+                const entryTbody = document.getElementById('entryPagesTable');
+                entryTbody.innerHTML = sortedEntries.length === 0 ? '<tr><td colspan="3">Ni podatkov</td></tr>' : '';
+                sortedEntries.forEach(([page, count]) => {
+                    entryTbody.innerHTML += `<tr><td>${page}</td><td>${count}</td><td>${Math.round(count/total*100)}%</td></tr>`;
+                });
+
+                // Clicks
+                const clicks = await fetchData('clicks', '?select=element_type,element_text,element_href,is_outbound&order=created_at.desc&limit=100');
+                const clickCounts = {};
+                const outboundCounts = {};
+                clicks.forEach(c => {
+                    const key = c.element_text?.substring(0,30) || c.element_href || 'Unknown';
+                    if (!clickCounts[key]) clickCounts[key] = { count: 0, type: c.element_type, href: c.element_href };
+                    clickCounts[key].count++;
+                    if (c.is_outbound && c.element_href) {
+                        outboundCounts[c.element_href] = (outboundCounts[c.element_href]||0) + 1;
+                    }
+                });
+
+                const clicksTbody = document.getElementById('clicksTable');
+                const topClicks = Object.entries(clickCounts).sort((a,b)=>b[1].count-a[1].count).slice(0,15);
+                clicksTbody.innerHTML = topClicks.length === 0 ? '<tr><td colspan="4">Ni podatkov</td></tr>' : '';
+                topClicks.forEach(([text, data]) => {
+                    clicksTbody.innerHTML += `<tr><td>${data.type}</td><td>${text}</td><td>${data.count}</td><td>${data.href ? '<span class="badge badge-blue">link</span>' : '<span class="badge badge-yellow">button</span>'}</td></tr>`;
+                });
+
+                const outboundTbody = document.getElementById('outboundTable');
+                const topOutbound = Object.entries(outboundCounts).sort((a,b)=>b[1]-a[1]).slice(0,10);
+                outboundTbody.innerHTML = topOutbound.length === 0 ? '<tr><td colspan="2">Ni zunanjih klikov</td></tr>' : '';
+                topOutbound.forEach(([url, count]) => {
+                    outboundTbody.innerHTML += `<tr><td style="word-break:break-all">${url}</td><td>${count}</td></tr>`;
+                });
+
+            } catch (e) { console.error(e); }
+        }
+
+        async function loadPerformance() {
+            try {
+                const perf = await fetchData('page_performance', '?select=page_url,load_time_ms,dom_ready_ms');
+                const perfByPage = {};
+                perf.forEach(p => {
+                    if (!perfByPage[p.page_url]) perfByPage[p.page_url] = { loads: [], doms: [] };
+                    perfByPage[p.page_url].loads.push(p.load_time_ms);
+                    perfByPage[p.page_url].doms.push(p.dom_ready_ms);
+                });
+
+                const tbody = document.getElementById('performanceTable');
+                tbody.innerHTML = '';
+                Object.entries(perfByPage).forEach(([page, data]) => {
+                    const avgLoad = Math.round(data.loads.reduce((a,b)=>a+b,0)/data.loads.length);
+                    const avgDom = Math.round(data.doms.reduce((a,b)=>a+b,0)/data.doms.length);
+                    const badge = avgLoad < 1000 ? 'badge-green' : avgLoad < 3000 ? 'badge-yellow' : 'badge-red';
+                    tbody.innerHTML += `<tr><td>${page}</td><td>${avgLoad}ms</td><td>${avgDom}ms</td><td><span class="badge ${badge}">${data.loads.length}x</span></td></tr>`;
+                });
+                if (tbody.innerHTML === '') tbody.innerHTML = '<tr><td colspan="4">Ni podatkov o hitrosti</td></tr>';
+            } catch (e) { console.error(e); }
+        }
+
+        async function loadCampaigns() {
+            try {
+                // UTM campaigns
+                const utm = await fetchData('utm_campaigns', '?select=utm_source,utm_medium,utm_campaign');
+                const utmCounts = {};
+                utm.forEach(u => {
+                    const key = `${u.utm_source || '-'}|${u.utm_medium || '-'}|${u.utm_campaign || '-'}`;
+                    utmCounts[key] = (utmCounts[key]||0) + 1;
+                });
+
+                const utmTbody = document.getElementById('utmTable');
+                const sortedUtm = Object.entries(utmCounts).sort((a,b)=>b[1]-a[1]);
+                utmTbody.innerHTML = sortedUtm.length === 0 ? '<tr><td colspan="4">Ni UTM kampanj</td></tr>' : '';
+                sortedUtm.forEach(([key, count]) => {
+                    const [source, medium, campaign] = key.split('|');
+                    utmTbody.innerHTML += `<tr><td>${source}</td><td>${medium}</td><td>${campaign}</td><td>${count}</td></tr>`;
+                });
+
+                // Referrers
+                const views = await fetchData('page_views', '?select=referrer&referrer=neq.null&referrer=neq.');
+                const refCounts = {};
+                views.forEach(v => {
+                    if (v.referrer) {
+                        try {
+                            const url = new URL(v.referrer);
+                            refCounts[url.hostname] = (refCounts[url.hostname]||0) + 1;
+                        } catch(e) {
+                            refCounts[v.referrer] = (refCounts[v.referrer]||0) + 1;
+                        }
+                    }
+                });
+
+                const refTbody = document.getElementById('referrersTable');
+                const sortedRef = Object.entries(refCounts).sort((a,b)=>b[1]-a[1]).slice(0,15);
+                refTbody.innerHTML = sortedRef.length === 0 ? '<tr><td colspan="2">Ni referrerjev</td></tr>' : '';
+                sortedRef.forEach(([ref, count]) => {
+                    refTbody.innerHTML += `<tr><td>${ref}</td><td>${count}</td></tr>`;
+                });
+
+            } catch (e) { console.error(e); }
+        }
+
+        async function loadErrors() {
+            try {
+                const todayStart = new Date(new Date().setHours(0,0,0,0)).toISOString();
+                const [all, today] = await Promise.all([
+                    fetchData('js_errors', '?select=id'),
+                    fetchData('js_errors', '?created_at=gte.' + todayStart + '&select=id')
+                ]);
+
+                document.getElementById('totalErrors').textContent = all.length;
+                document.getElementById('todayErrors').textContent = today.length;
+
+                const errors = await fetchData('js_errors', '?order=created_at.desc&limit=50');
+                const tbody = document.getElementById('errorsTable');
+                tbody.innerHTML = errors.length === 0 ? '<tr><td colspan="4">Ni napak - odlicno!</td></tr>' : '';
+                errors.forEach(e => {
+                    tbody.innerHTML += `<tr>
+                        <td style="max-width:400px;overflow:hidden;text-overflow:ellipsis">${e.error_message || '-'}</td>
+                        <td>${e.page_url}</td>
+                        <td>${e.error_line || '-'}:${e.error_column || '-'}</td>
+                        <td>${new Date(e.created_at).toLocaleString('sl-SI')}</td>
+                    </tr>`;
+                });
+            } catch (e) { console.error(e); }
+        }
+
+        async function loadBlockedIPs() {
+            try {
+                const blocked = await fetchData('blocked_ips', '?order=blocked_at.desc');
+                const tbody = document.getElementById('blockedTable');
+                tbody.innerHTML = '';
+                if (blocked.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="4">Ni blokiranih IP naslovov</td></tr>';
+                } else {
+                    blocked.forEach(b => {
+                        const tr = document.createElement('tr');
+                        tr.innerHTML = `<td>${b.ip_address}</td><td>${b.reason || '-'}</td><td>${new Date(b.blocked_at).toLocaleString('sl-SI')}</td><td><button class="btn-unblock" onclick="unblockIP('${b.ip_address}')">Odblokiraj</button></td>`;
+                        tbody.appendChild(tr);
+                    });
+                }
+            } catch (e) { console.error(e); }
+        }
+
+        async function unblockIP(ip) {
+            if (!confirm('Odblokiraj IP ' + ip + '?')) return;
+            try {
+                await fetch(SUPABASE_URL + '/rest/v1/blocked_ips?ip_address=eq.' + ip, {
+                    method: 'DELETE',
+                    headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': 'Bearer ' + token, 'Accept-Profile': 'analytics', 'Content-Profile': 'analytics' }
+                });
+                loadBlockedIPs();
+            } catch (e) { alert('Napaka'); }
+        }
+
+        function logout() {
+            localStorage.removeItem('admin_token');
+            localStorage.removeItem('admin_refresh_token');
+            window.location.href = 'index.html';
+        }
+
+        // Get current user's IP with fallbacks
+        async function getMyIP() {
+            // Try Cloudflare trace first
+            try {
+                const r = await fetch('https://www.cloudflare.com/cdn-cgi/trace');
+                if (r.ok) {
+                    const text = await r.text();
+                    const match = text.match(/ip=([^\n]+)/);
+                    if (match && match[1]) {
+                        document.getElementById('myIP').textContent = match[1];
+                        return match[1];
+                    }
+                }
+            } catch(e) {}
+
+            // Fallback APIs
+            const apis = [
+                { url: 'https://ipwho.is/', field: 'ip' },
+                { url: 'https://api.ipify.org?format=json', field: 'ip' }
+            ];
+
+            for (const api of apis) {
+                try {
+                    const r = await fetch(api.url);
+                    if (r.ok) {
+                        const data = await r.json();
+                        const ip = data[api.field];
+                        if (ip) {
+                            document.getElementById('myIP').textContent = ip;
+                            return ip;
+                        }
+                    }
+                } catch(e) { continue; }
+            }
+
+            document.getElementById('myIP').textContent = '-';
+            return null;
+        }
+
+        // Load visitors by IP
+        async function loadVisitors() {
+            try {
+                const now = new Date();
+                const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate()).toISOString();
+                const weekStart = new Date(now.getTime() - 7*24*60*60*1000).toISOString();
+                const monthStart = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
+
+                // Fetch views and durations
+                const [views, durations] = await Promise.all([
+                    fetchData('page_views', '?select=ip_address,page_url,country,city,device_type,browser,os,created_at,session_id&order=created_at.desc'),
+                    fetchData('session_duration', '?select=session_id,duration_seconds')
+                ]);
+
+                // Map durations by session
+                const sessionDurations = {};
+                durations.forEach(d => {
+                    if (!sessionDurations[d.session_id]) sessionDurations[d.session_id] = 0;
+                    sessionDurations[d.session_id] += d.duration_seconds;
+                });
+
+                // Calculate unique IPs
+                const todayIPs = new Set();
+                const weekIPs = new Set();
+                const monthIPs = new Set();
+
+                views.forEach(v => {
+                    if (!v.ip_address || v.ip_address === 'Unknown') return;
+                    const created = new Date(v.created_at);
+                    if (created >= new Date(todayStart)) todayIPs.add(v.ip_address);
+                    if (created >= new Date(weekStart)) weekIPs.add(v.ip_address);
+                    if (created >= new Date(monthStart)) monthIPs.add(v.ip_address);
+                });
+
+                document.getElementById('uniqueIPsToday').textContent = todayIPs.size;
+                document.getElementById('uniqueIPsWeek').textContent = weekIPs.size;
+                document.getElementById('uniqueIPsMonth').textContent = monthIPs.size;
+
+                // Aggregate by IP
+                const ipData = {};
+                views.forEach(v => {
+                    const ip = v.ip_address || 'Unknown';
+                    if (!ipData[ip]) {
+                        ipData[ip] = {
+                            visits: 0,
+                            pages: new Set(),
+                            sessions: new Set(),
+                            firstVisit: v.created_at,
+                            lastVisit: v.created_at,
+                            country: v.country,
+                            city: v.city,
+                            device: v.device_type,
+                            browser: v.browser,
+                            totalDuration: 0
+                        };
+                    }
+                    ipData[ip].visits++;
+                    ipData[ip].pages.add(v.page_url);
+                    ipData[ip].sessions.add(v.session_id);
+
+                    // Track first and last visit
+                    if (new Date(v.created_at) > new Date(ipData[ip].lastVisit)) {
+                        ipData[ip].lastVisit = v.created_at;
+                    }
+                    if (new Date(v.created_at) < new Date(ipData[ip].firstVisit)) {
+                        ipData[ip].firstVisit = v.created_at;
+                    }
+
+                    // Add session duration
+                    if (sessionDurations[v.session_id] && !ipData[ip].sessions.has(v.session_id + '_counted')) {
+                        ipData[ip].totalDuration += sessionDurations[v.session_id];
+                        ipData[ip].sessions.add(v.session_id + '_counted');
+                    }
+                });
+
+                // Sort by last visit (most recent first) - better for CV tracking
+                const sorted = Object.entries(ipData).sort((a,b) => new Date(b[1].lastVisit) - new Date(a[1].lastVisit));
+
+                const tbody = document.getElementById('visitorsTable');
+                tbody.textContent = '';
+
+                if (sorted.length === 0) {
+                    const tr = document.createElement('tr');
+                    const td = document.createElement('td');
+                    td.colSpan = 8;
+                    td.textContent = 'Ni podatkov';
+                    tr.appendChild(td);
+                    tbody.appendChild(tr);
+                } else {
+                    sorted.forEach(([ip, data]) => {
+                        const tr = document.createElement('tr');
+                        tr.className = 'clickable-row';
+                        tr.style.cursor = 'pointer';
+                        tr.onclick = () => { if (ip && ip !== 'Unknown') openIPDetailModal(ip); };
+                        tr.title = 'Klikni za podrobnosti';
+
+                        // IP cell
+                        const tdIP = document.createElement('td');
+                        const ipCode = document.createElement('code');
+                        ipCode.style.cssText = 'background:rgba(255,255,255,0.1);padding:2px 6px;border-radius:4px';
+                        ipCode.textContent = ip;
+                        tdIP.appendChild(ipCode);
+                        const label = getIPLabel(ip);
+                        if (label) {
+                            const labelSpan = document.createElement('span');
+                            labelSpan.className = 'ip-label';
+                            labelSpan.textContent = ' (' + label + ')';
+                            tdIP.appendChild(labelSpan);
+                        }
+                        const editBtn = document.createElement('button');
+                        editBtn.className = 'ip-label-btn';
+                        editBtn.textContent = '✏️';
+                        editBtn.title = 'Označi IP';
+                        editBtn.onclick = (e) => { e.stopPropagation(); openLabelModal(ip); };
+                        tdIP.appendChild(editBtn);
+
+                        // Location cell with flag
+                        const tdLoc = document.createElement('td');
+                        const flag = countryFlags[data.country] || '';
+                        tdLoc.textContent = flag + ' ' + (data.city || '-') + ', ' + (data.country || '-');
+
+                        // Visits cell
+                        const tdVisits = document.createElement('td');
+                        tdVisits.textContent = data.visits;
+
+                        // Pages cell
+                        const tdPages = document.createElement('td');
+                        tdPages.textContent = data.pages.size;
+
+                        // First visit cell
+                        const tdFirst = document.createElement('td');
+                        tdFirst.textContent = new Date(data.firstVisit).toLocaleDateString('sl-SI');
+                        tdFirst.style.fontSize = '0.85rem';
+
+                        // Last visit cell
+                        const tdLast = document.createElement('td');
+                        tdLast.textContent = new Date(data.lastVisit).toLocaleString('sl-SI');
+
+                        // Total duration cell
+                        const tdDuration = document.createElement('td');
+                        const dur = data.totalDuration;
+                        if (dur > 0) {
+                            const mins = Math.floor(dur / 60);
+                            const secs = dur % 60;
+                            tdDuration.textContent = mins + 'm ' + secs + 's';
+                            tdDuration.style.color = mins >= 2 ? '#4ade80' : mins >= 1 ? '#f59e0b' : '#ef4444';
+                        } else {
+                            tdDuration.textContent = '-';
+                        }
+
+                        // Device cell
+                        const tdDevice = document.createElement('td');
+                        tdDevice.textContent = (data.device || '-') + ' / ' + (data.browser || '-');
+                        tdDevice.style.fontSize = '0.85rem';
+
+                        tr.appendChild(tdIP);
+                        tr.appendChild(tdLoc);
+                        tr.appendChild(tdVisits);
+                        tr.appendChild(tdPages);
+                        tr.appendChild(tdFirst);
+                        tr.appendChild(tdLast);
+                        tr.appendChild(tdDuration);
+                        tr.appendChild(tdDevice);
+                        tbody.appendChild(tr);
+                    });
+                }
+
+                // Filter functionality - only add once
+                const filterInput = document.getElementById('ipFilter');
+                if (!filterInput.dataset.listenerAdded) {
+                    filterInput.addEventListener('input', (e) => {
+                        const filter = e.target.value.toLowerCase();
+                        tbody.querySelectorAll('tr').forEach(tr => {
+                            const ip = tr.querySelector('code')?.textContent.toLowerCase() || '';
+                            const label = tr.querySelector('.ip-label')?.textContent.toLowerCase() || '';
+                            tr.style.display = (ip.includes(filter) || label.includes(filter)) ? '' : 'none';
+                        });
+                    });
+                    filterInput.dataset.listenerAdded = 'true';
+                }
+
+                // Load active visitors with IP
+                const activeSessions = await fetchData('active_sessions', '?order=last_ping.desc');
+                const activeTbody = document.getElementById('activeVisitorsTable');
+                activeTbody.textContent = '';
+
+                if (activeSessions.length === 0) {
+                    const tr = document.createElement('tr');
+                    const td = document.createElement('td');
+                    td.colSpan = 5;
+                    td.textContent = 'Ni aktivnih obiskovalcev';
+                    tr.appendChild(td);
+                    activeTbody.appendChild(tr);
+                } else {
+                    activeSessions.forEach(s => {
+                        const tr = document.createElement('tr');
+                        tr.className = 'clickable-row';
+                        tr.style.cursor = 'pointer';
+                        tr.onclick = () => { if (s.ip_address) openIPDetailModal(s.ip_address); };
+
+                        const tdIP = document.createElement('td');
+                        const ipCode = document.createElement('code');
+                        ipCode.style.cssText = 'background:rgba(74,222,128,0.2);padding:2px 6px;border-radius:4px;color:#4ade80';
+                        ipCode.textContent = s.ip_address || '-';
+                        tdIP.appendChild(ipCode);
+                        const label = getIPLabel(s.ip_address);
+                        if (label) {
+                            const labelSpan = document.createElement('span');
+                            labelSpan.className = 'ip-label';
+                            labelSpan.textContent = ' (' + label + ')';
+                            tdIP.appendChild(labelSpan);
+                        }
+
+                        const tdPage = document.createElement('td');
+                        tdPage.textContent = s.page_url || '/';
+
+                        const tdLoc = document.createElement('td');
+                        const flag = countryFlags[s.country] || '';
+                        tdLoc.textContent = flag + ' ' + (s.city || '-') + ', ' + (s.country || '-');
+
+                        const tdDevice = document.createElement('td');
+                        tdDevice.textContent = s.device_type || '-';
+
+                        const tdBrowser = document.createElement('td');
+                        tdBrowser.textContent = s.browser || '-';
+
+                        tr.appendChild(tdIP);
+                        tr.appendChild(tdPage);
+                        tr.appendChild(tdLoc);
+                        tr.appendChild(tdDevice);
+                        tr.appendChild(tdBrowser);
+                        activeTbody.appendChild(tr);
+                    });
+                }
+
+            } catch(e) { console.error(e); }
+        }
+
+        // Country coordinates for map markers (slovenian, english, ISO codes)
+        const countryCoords = {
+            // Slovenia
+            'Slovenija': [46.1512, 14.9955], 'Slovenia': [46.1512, 14.9955], 'SI': [46.1512, 14.9955],
+            // Germany
+            'Nemčija': [51.1657, 10.4515], 'Germany': [51.1657, 10.4515], 'DE': [51.1657, 10.4515],
+            // Austria
+            'Avstrija': [47.5162, 14.5501], 'Austria': [47.5162, 14.5501], 'AT': [47.5162, 14.5501],
+            // Italy
+            'Italija': [41.8719, 12.5674], 'Italy': [41.8719, 12.5674], 'IT': [41.8719, 12.5674],
+            // Croatia
+            'Hrvaška': [45.1, 15.2], 'Croatia': [45.1, 15.2], 'HR': [45.1, 15.2],
+            // Hungary
+            'Madžarska': [47.1625, 19.5033], 'Hungary': [47.1625, 19.5033], 'HU': [47.1625, 19.5033],
+            // France
+            'Francija': [46.2276, 2.2137], 'France': [46.2276, 2.2137], 'FR': [46.2276, 2.2137],
+            // Spain
+            'Španija': [40.4637, -3.7492], 'Spain': [40.4637, -3.7492], 'ES': [40.4637, -3.7492],
+            // United Kingdom
+            'Velika Britanija': [55.3781, -3.436], 'United Kingdom': [55.3781, -3.436], 'GB': [55.3781, -3.436], 'UK': [55.3781, -3.436],
+            // USA
+            'ZDA': [37.0902, -95.7129], 'United States': [37.0902, -95.7129], 'US': [37.0902, -95.7129],
+            // Canada
+            'Kanada': [56.1304, -106.3468], 'Canada': [56.1304, -106.3468], 'CA': [56.1304, -106.3468],
+            // Australia
+            'Avstralija': [25.2744, 133.7751], 'Australia': [25.2744, 133.7751], 'AU': [25.2744, 133.7751],
+            // Japan
+            'Japonska': [36.2048, 138.2529], 'Japan': [36.2048, 138.2529], 'JP': [36.2048, 138.2529],
+            // China
+            'Kitajska': [35.8617, 104.1954], 'China': [35.8617, 104.1954], 'CN': [35.8617, 104.1954],
+            // India
+            'Indija': [20.5937, 78.9629], 'India': [20.5937, 78.9629], 'IN': [20.5937, 78.9629],
+            // Brazil
+            'Brazilija': [-14.235, -51.9253], 'Brazil': [-14.235, -51.9253], 'BR': [-14.235, -51.9253],
+            // Russia
+            'Rusija': [61.524, 105.3188], 'Russia': [61.524, 105.3188], 'RU': [61.524, 105.3188],
+            // Poland
+            'Poljska': [51.9194, 19.1451], 'Poland': [51.9194, 19.1451], 'PL': [51.9194, 19.1451],
+            // Czech Republic
+            'Češka': [49.8175, 15.473], 'Czech Republic': [49.8175, 15.473], 'Czechia': [49.8175, 15.473], 'CZ': [49.8175, 15.473],
+            // Slovakia
+            'Slovaška': [48.669, 19.699], 'Slovakia': [48.669, 19.699], 'SK': [48.669, 19.699],
+            // Serbia
+            'Srbija': [44.0165, 21.0059], 'Serbia': [44.0165, 21.0059], 'RS': [44.0165, 21.0059],
+            // Bosnia
+            'Bosna in Hercegovina': [43.9159, 17.6791], 'Bosnia and Herzegovina': [43.9159, 17.6791], 'BA': [43.9159, 17.6791],
+            // Montenegro
+            'Črna gora': [42.7087, 19.3744], 'Montenegro': [42.7087, 19.3744], 'ME': [42.7087, 19.3744],
+            // North Macedonia
+            'Severna Makedonija': [41.5124, 21.7465], 'North Macedonia': [41.5124, 21.7465], 'Macedonia': [41.5124, 21.7465], 'MK': [41.5124, 21.7465],
+            // Albania
+            'Albanija': [41.1533, 20.1683], 'Albania': [41.1533, 20.1683], 'AL': [41.1533, 20.1683],
+            // Greece
+            'Grčija': [39.0742, 21.8243], 'Greece': [39.0742, 21.8243], 'GR': [39.0742, 21.8243],
+            // Turkey
+            'Turčija': [38.9637, 35.2433], 'Turkey': [38.9637, 35.2433], 'TR': [38.9637, 35.2433],
+            // Ukraine
+            'Ukrajina': [48.3794, 31.1656], 'Ukraine': [48.3794, 31.1656], 'UA': [48.3794, 31.1656],
+            // Romania
+            'Romunija': [45.9432, 24.9668], 'Romania': [45.9432, 24.9668], 'RO': [45.9432, 24.9668],
+            // Bulgaria
+            'Bolgarija': [42.7339, 25.4858], 'Bulgaria': [42.7339, 25.4858], 'BG': [42.7339, 25.4858],
+            // Netherlands
+            'Nizozemska': [52.1326, 5.2913], 'Netherlands': [52.1326, 5.2913], 'NL': [52.1326, 5.2913],
+            // Belgium
+            'Belgija': [50.5039, 4.4699], 'Belgium': [50.5039, 4.4699], 'BE': [50.5039, 4.4699],
+            // Switzerland
+            'Švica': [46.8182, 8.2275], 'Switzerland': [46.8182, 8.2275], 'CH': [46.8182, 8.2275],
+            // Portugal
+            'Portugalska': [39.3999, -8.2245], 'Portugal': [39.3999, -8.2245], 'PT': [39.3999, -8.2245],
+            // Sweden
+            'Švedska': [60.1282, 18.6435], 'Sweden': [60.1282, 18.6435], 'SE': [60.1282, 18.6435],
+            // Norway
+            'Norveška': [60.472, 8.4689], 'Norway': [60.472, 8.4689], 'NO': [60.472, 8.4689],
+            // Denmark
+            'Danska': [56.2639, 9.5018], 'Denmark': [56.2639, 9.5018], 'DK': [56.2639, 9.5018],
+            // Finland
+            'Finska': [61.9241, 25.7482], 'Finland': [61.9241, 25.7482], 'FI': [61.9241, 25.7482],
+            // Ireland
+            'Irska': [53.1424, -7.6921], 'Ireland': [53.1424, -7.6921], 'IE': [53.1424, -7.6921],
+            // Mexico
+            'Mehika': [23.6345, -102.5528], 'Mexico': [23.6345, -102.5528], 'MX': [23.6345, -102.5528],
+            // Argentina
+            'Argentina': [-38.4161, -63.6167], 'AR': [-38.4161, -63.6167],
+            // South Africa
+            'Južna Afrika': [-30.5595, 22.9375], 'South Africa': [-30.5595, 22.9375], 'ZA': [-30.5595, 22.9375],
+            // Egypt
+            'Egipt': [26.8206, 30.8025], 'Egypt': [26.8206, 30.8025], 'EG': [26.8206, 30.8025],
+            // South Korea
+            'Južna Koreja': [35.9078, 127.7669], 'South Korea': [35.9078, 127.7669], 'Korea': [35.9078, 127.7669], 'KR': [35.9078, 127.7669],
+            // Taiwan
+            'Tajvan': [23.6978, 120.9605], 'Taiwan': [23.6978, 120.9605], 'TW': [23.6978, 120.9605],
+            // Singapore
+            'Singapur': [1.3521, 103.8198], 'Singapore': [1.3521, 103.8198], 'SG': [1.3521, 103.8198],
+            // Malaysia
+            'Malezija': [4.2105, 101.9758], 'Malaysia': [4.2105, 101.9758], 'MY': [4.2105, 101.9758],
+            // Thailand
+            'Tajska': [15.87, 100.9925], 'Thailand': [15.87, 100.9925], 'TH': [15.87, 100.9925],
+            // Vietnam
+            'Vietnam': [14.0583, 108.2772], 'VN': [14.0583, 108.2772],
+            // Indonesia
+            'Indonezija': [-0.7893, 113.9213], 'Indonesia': [-0.7893, 113.9213], 'ID': [-0.7893, 113.9213],
+            // Philippines
+            'Filipini': [12.8797, 121.774], 'Philippines': [12.8797, 121.774], 'PH': [12.8797, 121.774],
+            // New Zealand
+            'Nova Zelandija': [-40.9006, 174.886], 'New Zealand': [-40.9006, 174.886], 'NZ': [-40.9006, 174.886],
+            // Israel
+            'Izrael': [31.0461, 34.8516], 'Israel': [31.0461, 34.8516], 'IL': [31.0461, 34.8516],
+            // UAE
+            'ZAE': [23.4241, 53.8478], 'United Arab Emirates': [23.4241, 53.8478], 'AE': [23.4241, 53.8478]
+        };
+
+        // Country code to flag emoji (ISO codes, slovenian, english)
+        const countryFlags = {
+            // ISO codes
+            'SI': '🇸🇮', 'DE': '🇩🇪', 'AT': '🇦🇹', 'IT': '🇮🇹', 'HR': '🇭🇷', 'HU': '🇭🇺',
+            'FR': '🇫🇷', 'ES': '🇪🇸', 'GB': '🇬🇧', 'US': '🇺🇸', 'CA': '🇨🇦', 'AU': '🇦🇺',
+            'JP': '🇯🇵', 'CN': '🇨🇳', 'IN': '🇮🇳', 'BR': '🇧🇷', 'RU': '🇷🇺', 'PL': '🇵🇱',
+            'CZ': '🇨🇿', 'SK': '🇸🇰', 'RS': '🇷🇸', 'BA': '🇧🇦', 'ME': '🇲🇪', 'MK': '🇲🇰',
+            'AL': '🇦🇱', 'GR': '🇬🇷', 'TR': '🇹🇷', 'UA': '🇺🇦', 'RO': '🇷🇴', 'BG': '🇧🇬',
+            'NL': '🇳🇱', 'BE': '🇧🇪', 'CH': '🇨🇭', 'PT': '🇵🇹', 'SE': '🇸🇪', 'NO': '🇳🇴',
+            'DK': '🇩🇰', 'FI': '🇫🇮', 'IE': '🇮🇪', 'MX': '🇲🇽', 'AR': '🇦🇷', 'ZA': '🇿🇦',
+            'EG': '🇪🇬', 'KR': '🇰🇷', 'TW': '🇹🇼', 'SG': '🇸🇬', 'MY': '🇲🇾', 'TH': '🇹🇭',
+            'VN': '🇻🇳', 'ID': '🇮🇩', 'PH': '🇵🇭', 'NZ': '🇳🇿', 'IL': '🇮🇱', 'AE': '🇦🇪',
+            // Slovenian names
+            'Slovenija': '🇸🇮', 'Nemčija': '🇩🇪', 'Avstrija': '🇦🇹', 'Italija': '🇮🇹',
+            'Hrvaška': '🇭🇷', 'Madžarska': '🇭🇺', 'Francija': '🇫🇷', 'Španija': '🇪🇸',
+            'Velika Britanija': '🇬🇧', 'ZDA': '🇺🇸', 'Kanada': '🇨🇦', 'Avstralija': '🇦🇺',
+            'Japonska': '🇯🇵', 'Kitajska': '🇨🇳', 'Indija': '🇮🇳', 'Brazilija': '🇧🇷',
+            'Rusija': '🇷🇺', 'Poljska': '🇵🇱', 'Češka': '🇨🇿', 'Slovaška': '🇸🇰',
+            'Srbija': '🇷🇸', 'Bosna in Hercegovina': '🇧🇦', 'Črna gora': '🇲🇪',
+            'Severna Makedonija': '🇲🇰', 'Albanija': '🇦🇱', 'Grčija': '🇬🇷',
+            'Turčija': '🇹🇷', 'Ukrajina': '🇺🇦', 'Romunija': '🇷🇴', 'Bolgarija': '🇧🇬',
+            'Nizozemska': '🇳🇱', 'Belgija': '🇧🇪', 'Švica': '🇨🇭', 'Portugalska': '🇵🇹',
+            'Švedska': '🇸🇪', 'Norveška': '🇳🇴', 'Danska': '🇩🇰', 'Finska': '🇫🇮',
+            'Irska': '🇮🇪', 'Mehika': '🇲🇽', 'Argentina': '🇦🇷', 'Južna Afrika': '🇿🇦',
+            'Egipt': '🇪🇬', 'Južna Koreja': '🇰🇷', 'Tajvan': '🇹🇼', 'Singapur': '🇸🇬',
+            'Malezija': '🇲🇾', 'Tajska': '🇹🇭', 'Vietnam': '🇻🇳', 'Indonezija': '🇮🇩',
+            'Filipini': '🇵🇭', 'Nova Zelandija': '🇳🇿', 'Izrael': '🇮🇱', 'ZAE': '🇦🇪',
+            // English names
+            'Slovenia': '🇸🇮', 'Germany': '🇩🇪', 'Austria': '🇦🇹', 'Italy': '🇮🇹',
+            'Croatia': '🇭🇷', 'Hungary': '🇭🇺', 'France': '🇫🇷', 'Spain': '🇪🇸',
+            'United Kingdom': '🇬🇧', 'United States': '🇺🇸', 'Canada': '🇨🇦', 'Australia': '🇦🇺',
+            'Japan': '🇯🇵', 'China': '🇨🇳', 'India': '🇮🇳', 'Brazil': '🇧🇷',
+            'Russia': '🇷🇺', 'Poland': '🇵🇱', 'Czech Republic': '🇨🇿', 'Czechia': '🇨🇿', 'Slovakia': '🇸🇰',
+            'Serbia': '🇷🇸', 'Bosnia and Herzegovina': '🇧🇦', 'Montenegro': '🇲🇪',
+            'North Macedonia': '🇲🇰', 'Macedonia': '🇲🇰', 'Albania': '🇦🇱', 'Greece': '🇬🇷',
+            'Turkey': '🇹🇷', 'Ukraine': '🇺🇦', 'Romania': '🇷🇴', 'Bulgaria': '🇧🇬',
+            'Netherlands': '🇳🇱', 'Belgium': '🇧🇪', 'Switzerland': '🇨🇭', 'Portugal': '🇵🇹',
+            'Sweden': '🇸🇪', 'Norway': '🇳🇴', 'Denmark': '🇩🇰', 'Finland': '🇫🇮',
+            'Ireland': '🇮🇪', 'Mexico': '🇲🇽', 'South Africa': '🇿🇦',
+            'Egypt': '🇪🇬', 'South Korea': '🇰🇷', 'Korea': '🇰🇷', 'Taiwan': '🇹🇼', 'Singapore': '🇸🇬',
+            'Malaysia': '🇲🇾', 'Thailand': '🇹🇭', 'Indonesia': '🇮🇩',
+            'Philippines': '🇵🇭', 'New Zealand': '🇳🇿', 'Israel': '🇮🇱', 'United Arab Emirates': '🇦🇪'
+        };
+
+        let liveMarkers = [];
+
+        async function loadMap() {
+            try {
+                const [views, activeSessions] = await Promise.all([
+                    fetchData('page_views', '?select=country,city,ip_address&order=created_at.desc'),
+                    fetchData('active_sessions', '?select=country,city,page_url,device_type,browser,ip_address')
+                ]);
+
+                // Group by country (convert codes to full names)
+                const countryData = {};
+                const cityData = {};
+                const uniqueIPs = new Set();
+
+                views.forEach(v => {
+                    const rawCountry = v.country || 'Unknown';
+                    const country = getCountryFullName(rawCountry);
+                    const city = v.city || 'Unknown';
+                    if (country !== 'Unknown') {
+                        countryData[country] = (countryData[country] || 0) + 1;
+                        if (city !== 'Unknown') {
+                            const cityKey = `${city}, ${country}`;
+                            if (!cityData[cityKey]) cityData[cityKey] = { count: 0, country: country, city: city };
+                            cityData[cityKey].count++;
+                        }
+                    }
+                    if (v.ip_address && v.ip_address !== 'Unknown') uniqueIPs.add(v.ip_address);
+                });
+
+                const countryCount = Object.keys(countryData).length;
+                const cityCount = Object.keys(cityData).length;
+                const sortedCountries = Object.entries(countryData).sort((a, b) => b[1] - a[1]);
+                const topCountry = sortedCountries[0];
+
+                document.getElementById('mapCountries').textContent = countryCount;
+                document.getElementById('mapCities').textContent = cityCount;
+                document.getElementById('mapTopCountry').textContent = topCountry ? `${countryFlags[topCountry[0]] || ''} ${topCountry[0]}` : '-';
+
+                // Initialize map if not already
+                if (!visitorsMap) {
+                    visitorsMap = L.map('visitorsMap').setView([46.1512, 14.9955], 3);
+                    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+                        attribution: '© OpenStreetMap, © CARTO',
+                        maxZoom: 19
+                    }).addTo(visitorsMap);
+                }
+
+                // Clear existing markers
+                visitorsMap.eachLayer(layer => {
+                    if (layer instanceof L.CircleMarker || layer instanceof L.Marker) visitorsMap.removeLayer(layer);
+                });
+                liveMarkers = [];
+
+                // Add markers for each country (historical data)
+                sortedCountries.forEach(([country, count]) => {
+                    const coords = countryCoords[country];
+                    if (coords) {
+                        const radius = Math.min(Math.max(Math.sqrt(count) * 5, 8), 40);
+                        const marker = L.circleMarker(coords, {
+                            radius: radius,
+                            fillColor: '#4ade80',
+                            color: '#22c55e',
+                            weight: 2,
+                            opacity: 0.8,
+                            fillOpacity: 0.3
+                        }).addTo(visitorsMap);
+
+                        // Get cities for this country
+                        const countryCities = Object.entries(cityData)
+                            .filter(([key, data]) => data.country === country)
+                            .sort((a, b) => b[1].count - a[1].count)
+                            .slice(0, 5);
+
+                        let popup = `<div style="min-width:150px"><strong>${countryFlags[country] || ''} ${country}</strong><br>
+                            <span style="color:#4ade80;font-size:1.2em;font-weight:bold">${count}</span> obiskov`;
+
+                        if (countryCities.length > 0) {
+                            popup += `<hr style="border-color:rgba(255,255,255,0.2);margin:8px 0"><strong>Mesta:</strong><ul style="margin:4px 0 0 16px;padding:0">`;
+                            countryCities.forEach(([cityKey, data]) => {
+                                popup += `<li>${data.city}: ${data.count}</li>`;
+                            });
+                            popup += `</ul>`;
+                        }
+                        popup += `</div>`;
+
+                        marker.bindPopup(popup);
+                    }
+                });
+
+                // Add LIVE markers for active sessions
+                let liveCount = 0;
+                activeSessions.forEach((session, index) => {
+                    const rawCountry = session.country || 'Unknown';
+                    const country = getCountryFullName(rawCountry);
+                    const coords = countryCoords[country];
+
+                    if (coords && country !== 'Unknown') {
+                        liveCount++;
+                        // Offset slightly so multiple live visitors from same country don't overlap
+                        const offset = index * 0.5;
+                        const liveCoords = [coords[0] + offset, coords[1] + offset];
+
+                        // Create pulsing div icon for live marker
+                        const liveIcon = L.divIcon({
+                            className: 'live-marker-container',
+                            html: `<div class="live-marker" style="width:16px;height:16px;"></div>`,
+                            iconSize: [16, 16],
+                            iconAnchor: [8, 8]
+                        });
+
+                        const liveMarker = L.marker(liveCoords, { icon: liveIcon }).addTo(visitorsMap);
+
+                        const city = session.city || 'Unknown';
+                        const ipLabel = getIPLabel(session.ip_address);
+                        const labelBadge = ipLabel ? `<span style="background:#f59e0b;color:#000;padding:2px 6px;border-radius:4px;font-size:0.75rem;font-weight:600">${ipLabel}</span>` : '';
+                        const popup = `<div style="min-width:180px">
+                            <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+                                <div class="live-marker" style="width:10px;height:10px;"></div>
+                                <strong style="color:#4ade80">LIVE</strong>
+                                ${labelBadge}
+                            </div>
+                            <strong>${countryFlags[country] || ''} ${city}, ${country}</strong><br>
+                            <hr style="border-color:rgba(255,255,255,0.2);margin:8px 0">
+                            <div style="font-size:0.85em">
+                                📄 ${session.page_url || '/'}<br>
+                                💻 ${session.device_type || 'Unknown'}<br>
+                                🌐 ${session.browser || 'Unknown'}<br>
+                                <code style="background:rgba(255,255,255,0.1);padding:1px 4px;border-radius:3px;font-size:0.8em">${session.ip_address || '-'}</code>
+                            </div>
+                        </div>`;
+
+                        liveMarker.bindPopup(popup);
+                        liveMarkers.push(liveMarker);
+                    }
+                });
+
+                document.getElementById('mapLiveCount').textContent = liveCount;
+
+                // Update country list
+                const countryList = document.getElementById('countryList');
+                countryList.innerHTML = '';
+                sortedCountries.forEach(([country, count]) => {
+                    const card = document.createElement('div');
+                    card.className = 'country-card';
+                    card.innerHTML = `
+                        <div class="name">
+                            <span class="flag">${countryFlags[country] || '🌍'}</span>
+                            <span>${country}</span>
+                        </div>
+                        <span class="count">${count}</span>
+                    `;
+                    card.style.cursor = 'pointer';
+                    card.onclick = () => {
+                        const coords = countryCoords[country];
+                        if (coords) visitorsMap.setView(coords, 5);
+                    };
+                    countryList.appendChild(card);
+                });
+
+                if (countryList.children.length === 0) {
+                    countryList.innerHTML = '<p style="color:rgba(255,255,255,0.5)">Ni podatkov o lokacijah</p>';
+                }
+
+            } catch (e) { console.error('Map error:', e); }
+        }
+
+        // Update live markers every 15 seconds
+        function startLiveMapUpdates() {
+            setInterval(async () => {
+                if (document.getElementById('map').classList.contains('active')) {
+                    // Only update live markers, not full map
+                    try {
+                        const activeSessions = await fetchData('active_sessions', '?select=country,city,page_url,device_type,browser,ip_address');
+
+                        // Remove old live markers
+                        liveMarkers.forEach(m => visitorsMap.removeLayer(m));
+                        liveMarkers = [];
+
+                        let liveCount = 0;
+                        activeSessions.forEach((session, index) => {
+                            const rawCountry = session.country || 'Unknown';
+                            const country = getCountryFullName(rawCountry);
+                            const coords = countryCoords[country];
+
+                            if (coords && country !== 'Unknown') {
+                                liveCount++;
+                                const offset = index * 0.5;
+                                const liveCoords = [coords[0] + offset, coords[1] + offset];
+
+                                const liveIcon = L.divIcon({
+                                    className: 'live-marker-container',
+                                    html: `<div class="live-marker" style="width:16px;height:16px;"></div>`,
+                                    iconSize: [16, 16],
+                                    iconAnchor: [8, 8]
+                                });
+
+                                const liveMarker = L.marker(liveCoords, { icon: liveIcon }).addTo(visitorsMap);
+
+                                const city = session.city || 'Unknown';
+                                const ipLabel = getIPLabel(session.ip_address);
+                                const labelBadge = ipLabel ? `<span style="background:#f59e0b;color:#000;padding:2px 6px;border-radius:4px;font-size:0.75rem;font-weight:600">${ipLabel}</span>` : '';
+                                const popup = `<div style="min-width:180px">
+                                    <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+                                        <div class="live-marker" style="width:10px;height:10px;"></div>
+                                        <strong style="color:#4ade80">LIVE</strong>
+                                        ${labelBadge}
+                                    </div>
+                                    <strong>${countryFlags[country] || ''} ${city}, ${country}</strong><br>
+                                    <hr style="border-color:rgba(255,255,255,0.2);margin:8px 0">
+                                    <div style="font-size:0.85em">
+                                        📄 ${session.page_url || '/'}<br>
+                                        💻 ${session.device_type || 'Unknown'}<br>
+                                        🌐 ${session.browser || 'Unknown'}<br>
+                                        <code style="background:rgba(255,255,255,0.1);padding:1px 4px;border-radius:3px;font-size:0.8em">${session.ip_address || '-'}</code>
+                                    </div>
+                                </div>`;
+
+                                liveMarker.bindPopup(popup);
+                                liveMarkers.push(liveMarker);
+                            }
+                        });
+
+                        document.getElementById('mapLiveCount').textContent = liveCount;
+                    } catch(e) { console.error('Live map update error:', e); }
+                }
+            }, 15000);
+        }
+
+        // IP Detail Modal Functions
+        function openIPDetailModal(ip) {
+            document.getElementById('ipDetailIP').textContent = ip;
+            const label = getIPLabel(ip);
+            const labelEl = document.getElementById('ipDetailLabel');
+            if (label) {
+                labelEl.textContent = '(' + label + ')';
+                labelEl.style.display = 'inline';
+            } else {
+                labelEl.style.display = 'none';
+            }
+            document.getElementById('ipDetailModal').classList.add('active');
+            loadIPDetails(ip);
+        }
+
+        function closeIPDetailModal() {
+            document.getElementById('ipDetailModal').classList.remove('active');
+        }
+
+        // Close modal on click outside or escape
+        document.getElementById('ipDetailModal').addEventListener('click', (e) => {
+            if (e.target.id === 'ipDetailModal') closeIPDetailModal();
+        });
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && document.getElementById('ipDetailModal').classList.contains('active')) {
+                closeIPDetailModal();
+            }
+        });
+
+        async function loadIPDetails(ip) {
+            const statsEl = document.getElementById('ipDetailStats');
+            const timelineEl = document.getElementById('ipDetailTimeline');
+            const clicksEl = document.getElementById('ipDetailClicks');
+            const clicksSection = document.getElementById('ipDetailClicksSection');
+            const outboundEl = document.getElementById('ipDetailOutbound');
+            const outboundSection = document.getElementById('ipDetailOutboundSection');
+            const sessionsEl = document.getElementById('ipDetailSessions');
+
+            // Show loading
+            statsEl.textContent = '';
+            const loadingDiv = document.createElement('div');
+            loadingDiv.style.cssText = 'text-align:center;color:rgba(255,255,255,0.5)';
+            loadingDiv.textContent = 'Nalagam...';
+            statsEl.appendChild(loadingDiv);
+            timelineEl.textContent = '';
+            clicksEl.textContent = '';
+            sessionsEl.textContent = '';
+
+            try {
+                // Fetch all data for this IP
+                const [pageViews, durations, scrolls, clicks] = await Promise.all([
+                    fetchData('page_views', '?ip_address=eq.' + ip + '&order=created_at.desc&select=*'),
+                    fetchData('session_duration', '?select=session_id,page_url,duration_seconds'),
+                    fetchData('scroll_depth', '?select=session_id,page_url,max_depth'),
+                    fetchData('clicks', '?select=session_id,page_url,element_type,element_text,element_href,is_outbound,created_at')
+                ]);
+
+                // Get sessions for this IP
+                const ipSessions = new Set(pageViews.map(v => v.session_id));
+
+                // Filter durations and scrolls by sessions
+                const ipDurations = durations.filter(d => ipSessions.has(d.session_id));
+                const ipScrolls = scrolls.filter(s => ipSessions.has(s.session_id));
+                const ipClicks = clicks.filter(c => ipSessions.has(c.session_id));
+
+                // Calculate stats
+                const totalViews = pageViews.length;
+                const uniquePages = new Set(pageViews.map(v => v.page_url)).size;
+                const totalSessions = ipSessions.size;
+                const totalDuration = ipDurations.reduce((a, b) => a + b.duration_seconds, 0);
+                const avgDuration = ipDurations.length > 0 ? Math.round(totalDuration / ipDurations.length) : 0;
+                const avgScroll = ipScrolls.length > 0 ? Math.round(ipScrolls.reduce((a, b) => a + b.max_depth, 0) / ipScrolls.length) : 0;
+
+                // Get device/location info from first page view
+                const deviceInfo = pageViews[0] || {};
+
+                // Get first and last visit
+                const lastView = pageViews[0];
+                const firstView = pageViews[pageViews.length - 1];
+                const firstVisit = firstView ? new Date(firstView.created_at) : null;
+                const lastVisit = lastView ? new Date(lastView.created_at) : null;
+
+                // Get referrer (from entry pages)
+                const entryView = pageViews.find(v => v.is_entry && v.referrer);
+                const referrer = entryView?.referrer || pageViews.find(v => v.referrer)?.referrer;
+
+                // Render stats using DOM methods
+                statsEl.textContent = '';
+                const statsData = [
+                    { num: totalViews, lbl: 'Ogledov strani' },
+                    { num: uniquePages, lbl: 'Različnih strani' },
+                    { num: totalSessions, lbl: 'Sej' },
+                    { num: Math.floor(totalDuration/60) + 'm ' + (totalDuration%60) + 's', lbl: 'Skupni čas' },
+                    { num: avgScroll + '%', lbl: 'Povp. scroll' },
+                    { num: ipClicks.length, lbl: 'Klikov' }
+                ];
+
+                // Add first/last visit
+                if (firstVisit) {
+                    statsData.push({ num: firstVisit.toLocaleDateString('sl-SI'), lbl: 'Prvi obisk', small: true });
+                }
+                if (lastVisit) {
+                    statsData.push({ num: lastVisit.toLocaleString('sl-SI'), lbl: 'Zadnji obisk', small: true });
+                }
+
+                if (deviceInfo.country || deviceInfo.city) {
+                    const flag = countryFlags[deviceInfo.country] || '';
+                    statsData.push(
+                        { num: flag + ' ' + (deviceInfo.city || '-') + ', ' + (deviceInfo.country || '-'), lbl: 'Lokacija', small: true },
+                        { num: deviceInfo.device_type || '-', lbl: 'Naprava', small: true },
+                        { num: (deviceInfo.browser || '-') + ' / ' + (deviceInfo.os || '-'), lbl: 'Brskalnik / OS', small: true }
+                    );
+                }
+
+                // Add referrer if exists
+                if (referrer) {
+                    try {
+                        const refUrl = new URL(referrer);
+                        statsData.push({ num: refUrl.hostname, lbl: 'Prišel iz (referrer)', small: true });
+                    } catch(e) {
+                        statsData.push({ num: referrer.substring(0, 40), lbl: 'Prišel iz (referrer)', small: true });
+                    }
+                }
+
+                statsData.forEach(stat => {
+                    const div = document.createElement('div');
+                    div.className = 'ip-detail-stat';
+                    const numDiv = document.createElement('div');
+                    numDiv.className = 'num';
+                    if (stat.small) numDiv.style.fontSize = '1rem';
+                    numDiv.textContent = stat.num;
+                    const lblDiv = document.createElement('div');
+                    lblDiv.className = 'lbl';
+                    lblDiv.textContent = stat.lbl;
+                    div.appendChild(numDiv);
+                    div.appendChild(lblDiv);
+                    statsEl.appendChild(div);
+                });
+
+                // Render timeline
+                timelineEl.textContent = '';
+                if (pageViews.length === 0) {
+                    const noData = document.createElement('div');
+                    noData.style.cssText = 'color:rgba(255,255,255,0.5);padding:16px';
+                    noData.textContent = 'Ni podatkov';
+                    timelineEl.appendChild(noData);
+                } else {
+                    // Map session durations and scrolls
+                    const sessionDurations = {};
+                    ipDurations.forEach(d => {
+                        sessionDurations[d.session_id + '|' + d.page_url] = d.duration_seconds;
+                    });
+                    const sessionScrolls = {};
+                    ipScrolls.forEach(s => {
+                        sessionScrolls[s.session_id + '|' + s.page_url] = s.max_depth;
+                    });
+
+                    pageViews.forEach(v => {
+                        const key = v.session_id + '|' + v.page_url;
+                        const duration = sessionDurations[key];
+                        const scroll = sessionScrolls[key];
+
+                        const item = document.createElement('div');
+                        item.className = 'ip-timeline-item';
+
+                        const timeDiv = document.createElement('div');
+                        timeDiv.className = 'ip-timeline-time';
+                        timeDiv.textContent = new Date(v.created_at).toLocaleString('sl-SI');
+
+                        const pageDiv = document.createElement('div');
+                        pageDiv.className = 'ip-timeline-page';
+                        pageDiv.textContent = v.page_url;
+
+                        const metaDiv = document.createElement('div');
+                        metaDiv.className = 'ip-timeline-meta';
+                        if (duration) {
+                            const durSpan = document.createElement('span');
+                            durSpan.textContent = '⏱️ ' + Math.floor(duration/60) + 'm ' + (duration%60) + 's';
+                            metaDiv.appendChild(durSpan);
+                        }
+                        if (scroll) {
+                            const scrollSpan = document.createElement('span');
+                            scrollSpan.textContent = '📜 ' + scroll + '%';
+                            metaDiv.appendChild(scrollSpan);
+                        }
+                        if (v.is_entry) {
+                            const entrySpan = document.createElement('span');
+                            entrySpan.style.color = '#f59e0b';
+                            entrySpan.textContent = '🚪 Vstop';
+                            metaDiv.appendChild(entrySpan);
+                        }
+
+                        item.appendChild(timeDiv);
+                        item.appendChild(pageDiv);
+                        item.appendChild(metaDiv);
+                        timelineEl.appendChild(item);
+                    });
+                }
+
+                // Render clicks
+                clicksEl.textContent = '';
+                if (ipClicks.length > 0) {
+                    clicksSection.style.display = 'block';
+                    const clickGroups = {};
+                    ipClicks.forEach(c => {
+                        const text = (c.element_text || c.element_href || 'Unknown').substring(0, 40);
+                        if (!clickGroups[text]) clickGroups[text] = { count: 0, type: c.element_type };
+                        clickGroups[text].count++;
+                    });
+
+                    Object.entries(clickGroups).sort((a,b) => b[1].count - a[1].count).slice(0, 20).forEach(([text, data]) => {
+                        const item = document.createElement('div');
+                        item.className = 'ip-click-item';
+                        const typeSpan = document.createElement('span');
+                        typeSpan.style.color = 'rgba(255,255,255,0.5)';
+                        typeSpan.textContent = data.type + ': ';
+                        item.appendChild(typeSpan);
+                        item.appendChild(document.createTextNode(text + ' '));
+                        const countSpan = document.createElement('span');
+                        countSpan.style.color = '#4ade80';
+                        countSpan.textContent = '(' + data.count + 'x)';
+                        item.appendChild(countSpan);
+                        clicksEl.appendChild(item);
+                    });
+                } else {
+                    clicksSection.style.display = 'none';
+                }
+
+                // Render outbound links
+                outboundEl.textContent = '';
+                const outboundClicks = ipClicks.filter(c => c.is_outbound && c.element_href);
+                if (outboundClicks.length > 0) {
+                    outboundSection.style.display = 'block';
+                    const outboundGroups = {};
+                    outboundClicks.forEach(c => {
+                        const url = c.element_href;
+                        if (!outboundGroups[url]) outboundGroups[url] = 0;
+                        outboundGroups[url]++;
+                    });
+
+                    Object.entries(outboundGroups).sort((a,b) => b[1] - a[1]).forEach(([url, count]) => {
+                        const item = document.createElement('div');
+                        item.className = 'ip-click-item';
+                        item.style.wordBreak = 'break-all';
+                        const link = document.createElement('a');
+                        link.href = url;
+                        link.target = '_blank';
+                        link.style.color = '#3b82f6';
+                        link.textContent = url;
+                        item.appendChild(link);
+                        const countSpan = document.createElement('span');
+                        countSpan.style.color = '#4ade80';
+                        countSpan.style.marginLeft = '8px';
+                        countSpan.textContent = '(' + count + 'x)';
+                        item.appendChild(countSpan);
+                        outboundEl.appendChild(item);
+                    });
+                } else {
+                    outboundSection.style.display = 'none';
+                }
+
+                // Render sessions
+                sessionsEl.textContent = '';
+                const sessionGroups = {};
+                pageViews.forEach(v => {
+                    if (!sessionGroups[v.session_id]) {
+                        sessionGroups[v.session_id] = { pages: [], start: v.created_at, end: v.created_at };
+                    }
+                    sessionGroups[v.session_id].pages.push(v.page_url);
+                    if (new Date(v.created_at) < new Date(sessionGroups[v.session_id].start)) {
+                        sessionGroups[v.session_id].start = v.created_at;
+                    }
+                    if (new Date(v.created_at) > new Date(sessionGroups[v.session_id].end)) {
+                        sessionGroups[v.session_id].end = v.created_at;
+                    }
+                });
+
+                ipDurations.forEach(d => {
+                    if (sessionGroups[d.session_id]) {
+                        if (!sessionGroups[d.session_id].totalDuration) sessionGroups[d.session_id].totalDuration = 0;
+                        sessionGroups[d.session_id].totalDuration += d.duration_seconds;
+                    }
+                });
+
+                const sortedSessions = Object.entries(sessionGroups).sort((a, b) => new Date(b[1].end) - new Date(a[1].end));
+
+                if (sortedSessions.length === 0) {
+                    const noData = document.createElement('div');
+                    noData.style.cssText = 'color:rgba(255,255,255,0.5);padding:16px';
+                    noData.textContent = 'Ni sej';
+                    sessionsEl.appendChild(noData);
+                } else {
+                    sortedSessions.forEach(([sessionId, data]) => {
+                        const uniquePages = [...new Set(data.pages)];
+                        const duration = data.totalDuration || 0;
+
+                        const item = document.createElement('div');
+                        item.className = 'ip-session-item';
+
+                        const header = document.createElement('div');
+                        header.className = 'ip-session-header';
+
+                        const headerLeft = document.createElement('div');
+                        const dateSpan = document.createElement('span');
+                        dateSpan.style.cssText = 'color:#4ade80;font-weight:500';
+                        dateSpan.textContent = new Date(data.start).toLocaleString('sl-SI');
+                        const countSpan = document.createElement('span');
+                        countSpan.style.cssText = 'color:rgba(255,255,255,0.4);margin-left:8px';
+                        countSpan.textContent = data.pages.length + ' ogledov';
+                        headerLeft.appendChild(dateSpan);
+                        headerLeft.appendChild(countSpan);
+
+                        const headerRight = document.createElement('div');
+                        headerRight.style.color = 'rgba(255,255,255,0.6)';
+                        headerRight.textContent = '⏱️ ' + Math.floor(duration/60) + 'm ' + (duration%60) + 's';
+
+                        header.appendChild(headerLeft);
+                        header.appendChild(headerRight);
+
+                        const pagesDiv = document.createElement('div');
+                        pagesDiv.className = 'ip-session-pages';
+                        uniquePages.forEach(p => {
+                            const pageSpan = document.createElement('span');
+                            pageSpan.style.cssText = 'background:rgba(255,255,255,0.05);padding:2px 8px;border-radius:4px;margin-right:4px;display:inline-block;margin-bottom:4px';
+                            pageSpan.textContent = p;
+                            pagesDiv.appendChild(pageSpan);
+                        });
+
+                        item.appendChild(header);
+                        item.appendChild(pagesDiv);
+                        sessionsEl.appendChild(item);
+                    });
+                }
+
+            } catch (e) {
+                console.error('Error loading IP details:', e);
+                statsEl.textContent = '';
+                const errorDiv = document.createElement('div');
+                errorDiv.style.cssText = 'color:#ef4444;padding:16px';
+                errorDiv.textContent = 'Napaka pri nalaganju podatkov';
+                statsEl.appendChild(errorDiv);
+            }
+        }
+
+        async function init() {
+            if (!(await checkAuth())) return;
+            document.getElementById('loadingOverlay').style.display = 'none';
+
+            // Load IP labels from database first
+            await loadIPLabelsFromDB();
+
+            await Promise.all([
+                loadActiveSessions(),
+                loadRecentVisitors(),
+                loadStats(),
+                loadCharts(),
+                loadTopPages(),
+                loadSubpages(),
+                loadBehavior(),
+                loadPerformance(),
+                loadCampaigns(),
+                loadErrors(),
+                loadBlockedIPs(),
+                loadVisitors(),
+                loadMap(),
+                getMyIP()
+            ]);
+
+            setInterval(loadActiveSessions, 15000);
+            setInterval(loadRecentVisitors, 30000);
+            setInterval(loadVisitors, 30000);
+            setInterval(loadStats, 60000);
+            startLiveMapUpdates();
+        }
+        init();
+    </script>
+</body>
+</html>

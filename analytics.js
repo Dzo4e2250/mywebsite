@@ -6,12 +6,12 @@
 (function() {
     'use strict';
 
-    // Configuration
-    const SUPABASE_URL = 'https://supabase.ristov.xyz';
-    const SUPABASE_ANON_KEY = '***REMOVED_SUPABASE_KEY***';
-    const DISCORD_WEBHOOK_URL = 'https://discordapp.com/api/webhooks/1458594067729617012/UgB2mWf25Fb2SBT2MdNC3CN8xjxwHyI5ChJzs43NdZRlC6j846Z8EAp1SEwmA3eMhEhE';
+    // Configuration - loaded from config.js (must be loaded before this script)
+    const SUPABASE_URL = (typeof SITE_CONFIG !== 'undefined') ? SITE_CONFIG.SUPABASE_URL : '';
+    const SUPABASE_ANON_KEY = (typeof SITE_CONFIG !== 'undefined') ? SITE_CONFIG.SUPABASE_ANON_KEY : '';
+    const DISCORD_BOT_URL = (typeof SITE_CONFIG !== 'undefined') ? SITE_CONFIG.DISCORD_VISITOR_BOT_URL : '';
     const PING_INTERVAL = 15000; // 15 seconds
-    const GEOLOCATION_API = 'https://ipapi.co/json/';
+    const GEOLOCATION_API = (typeof SITE_CONFIG !== 'undefined') ? SITE_CONFIG.GEOLOCATION_API : 'https://ipapi.co/json/';
 
     // Session management - use sessionStorage for true sessions
     let sessionId = sessionStorage.getItem('analytics_session_id');
@@ -285,88 +285,13 @@
         }
     }
 
-    // Fetch IP label from database
-    async function getIPLabel(ip) {
-        if (!ip || ip === 'Unknown') return null;
-        try {
-            const response = await fetch(`${SUPABASE_URL}/rest/v1/ip_labels?ip_address=eq.${ip}&select=label`, {
-                headers: {
-                    'apikey': SUPABASE_ANON_KEY,
-                    'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
-                    'Accept-Profile': 'analytics'
-                }
-            });
-            const data = await response.json();
-            if (data && data.length > 0) {
-                return data[0].label;
-            }
-        } catch(e) {}
-        return null;
-    }
-
-    // Send Discord notification
+    // Send Discord notification via server-side bot proxy (IP label check moved to server)
     async function sendDiscordNotification(data) {
         try {
-            // Check if this IP has a label (known user)
-            const ipLabel = await getIPLabel(data.ip_address);
-
-            // Skip notification for labeled IPs (known users like site owner)
-            if (ipLabel) {
-                console.log('Skipping Discord notification for known user:', ipLabel);
-                return;
-            }
-
-            // Build title with label if exists
-            let title = '🟢 LIVE obiskovalec na ristov.xyz';
-            if (ipLabel) {
-                title = `🟢 ${ipLabel} je na ristov.xyz`;
-            }
-
-            // Determine location display
-            let locationValue = `${data.city || 'Unknown'}, ${data.country || 'Unknown'}`;
-            let locationType = data.location_type === 'gps' ? '📍 GPS' : '🌐 IP';
-
-            const embed = {
-                title: title,
-                color: ipLabel ? 0xf59e0b : 0x00ff00, // Orange if labeled, green otherwise
-                fields: [
-                    { name: '📄 Stran', value: data.page_url || '/', inline: true },
-                    { name: '💻 Naprava', value: data.device_type || 'Unknown', inline: true },
-                    { name: '🖥️ OS', value: data.os || 'Unknown', inline: true },
-                    { name: '🌐 Brskalnik', value: data.browser || 'Unknown', inline: true },
-                    { name: '🌍 Lokacija', value: locationValue, inline: true },
-                    { name: '📡 Tip lokacije', value: locationType, inline: true },
-                    { name: '⏰ Čas', value: new Date().toLocaleString('sl-SI'), inline: true }
-                ],
-                timestamp: new Date().toISOString()
-            };
-
-            // Add GPS coordinates with Google Maps link if available
-            if (data.latitude && data.longitude) {
-                const mapsUrl = `https://maps.google.com/?q=${data.latitude},${data.longitude}`;
-                const accuracy = data.location_accuracy ? ` (±${data.location_accuracy}m)` : '';
-                embed.fields.push({
-                    name: '📍 GPS Koordinate',
-                    value: `[${data.latitude.toFixed(5)}, ${data.longitude.toFixed(5)}](${mapsUrl})${accuracy}`,
-                    inline: false
-                });
-            }
-
-            // Add IP with label info
-            if (data.ip_address && data.ip_address !== 'Unknown') {
-                const ipDisplay = ipLabel ? `${data.ip_address} (${ipLabel})` : data.ip_address;
-                embed.fields.push({ name: '🔗 IP', value: ipDisplay, inline: true });
-            }
-
-            // Add UTM info if present
-            if (data.utm_source) {
-                embed.fields.push({ name: '📢 Kampanja', value: `${data.utm_source} / ${data.utm_medium || '-'}`, inline: true });
-            }
-
-            await fetch(DISCORD_WEBHOOK_URL, {
+            await fetch(DISCORD_BOT_URL, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ embeds: [embed] })
+                body: JSON.stringify(data)
             });
         } catch (e) {
             console.log('Discord notification failed');

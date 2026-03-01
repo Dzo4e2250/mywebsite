@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="sl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login | ristov.xyz</title>
+    <link rel="icon" type="image/png" href="../logo-nobacground.png">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+        }
+
+        .login-container {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 40px;
+            width: 100%;
+            max-width: 400px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .login-header h1 {
+            font-size: 1.8rem;
+            margin-bottom: 8px;
+        }
+
+        .login-header p {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.9rem;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            color: #fff;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #4ade80;
+        }
+
+        .form-group input::placeholder {
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        .btn-login {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 8px;
+            background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%);
+            color: #000;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .btn-login:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(74, 222, 128, 0.3);
+        }
+
+        .btn-login:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .error-message {
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid rgba(239, 68, 68, 0.5);
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+            display: none;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(255, 255, 255, 0.2);
+            border-top-color: #4ade80;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 10px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .blocked-message {
+            text-align: center;
+            display: none;
+        }
+
+        .blocked-message h2 {
+            color: #ef4444;
+            margin-bottom: 10px;
+        }
+
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            color: rgba(255, 255, 255, 0.6);
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+
+        .back-link:hover {
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div id="loginForm">
+            <div class="login-header">
+                <h1>Admin Panel</h1>
+                <p>ristov.xyz Analytics</p>
+            </div>
+
+            <div class="error-message" id="errorMessage"></div>
+
+            <form id="authForm">
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" placeholder="admin@example.com" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Geslo</label>
+                    <input type="password" id="password" placeholder="••••••••" required>
+                </div>
+
+                <button type="submit" class="btn-login" id="loginBtn">Prijava</button>
+            </form>
+
+            <a href="/" class="back-link">← Nazaj na stran</a>
+        </div>
+
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p>Preverjam dostop...</p>
+        </div>
+
+        <div class="blocked-message" id="blockedMessage">
+            <h2>Dostop zavrnjen</h2>
+            <p>Vaš IP naslov je bil blokiran za dostop do admin panela.</p>
+            <p style="margin-top: 10px; color: rgba(255,255,255,0.6);">Če menite da je to napaka, kontaktirajte administratorja.</p>
+            <a href="/" class="back-link">← Nazaj na stran</a>
+        </div>
+    </div>
+
+    <script src="../config.js"></script>
+    <script>
+        const SUPABASE_URL = SITE_CONFIG.SUPABASE_URL;
+        const SUPABASE_ANON_KEY = SITE_CONFIG.SUPABASE_ANON_KEY;
+        const DISCORD_BOT_URL = SITE_CONFIG.DISCORD_ADMIN_BOT_URL;
+
+        let userIP = null;
+
+        // Check if already logged in
+        async function checkAuth() {
+            const token = localStorage.getItem('admin_token');
+            if (token) {
+                // Verify token
+                try {
+                    const response = await fetch(`${SUPABASE_URL}/auth/v1/user`, {
+                        headers: {
+                            'apikey': SUPABASE_ANON_KEY,
+                            'Authorization': `Bearer ${token}`
+                        }
+                    });
+                    if (response.ok) {
+                        window.location.href = 'dashboard.html';
+                        return;
+                    }
+                } catch (e) {}
+                localStorage.removeItem('admin_token');
+            }
+        }
+
+        // Get user IP
+        async function getUserIP() {
+            try {
+                const response = await fetch('https://ipapi.co/json/');
+                const data = await response.json();
+                userIP = data.ip;
+                return data;
+            } catch (e) {
+                return null;
+            }
+        }
+
+        // Check if IP is blocked
+        async function checkBlocked() {
+            if (!userIP) return false;
+
+            try {
+                const response = await fetch(
+                    `${SUPABASE_URL}/rest/v1/blocked_ips?ip_address=eq.${userIP}`,
+                    {
+                        headers: {
+                            'apikey': SUPABASE_ANON_KEY,
+                            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+                            'Accept-Profile': 'analytics'
+                        }
+                    }
+                );
+                const data = await response.json();
+                return data.length > 0;
+            } catch (e) {
+                return false;
+            }
+        }
+
+        // Send admin access notification via server-side bot proxy
+        async function notifyAdminAccess(geoData) {
+            try {
+                const ua = navigator.userAgent;
+                await fetch(DISCORD_BOT_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        ip: userIP || 'Unknown',
+                        country: geoData?.country_name || 'Unknown',
+                        city: geoData?.city || 'Unknown',
+                        os: ua.includes('Windows') ? 'Windows' : ua.includes('Mac') ? 'macOS' : ua.includes('Linux') ? 'Linux' : 'Unknown',
+                        browser: ua.includes('Firefox') ? 'Firefox' : ua.includes('Edg') ? 'Edge' : ua.includes('Chrome') ? 'Chrome' : ua.includes('Safari') ? 'Safari' : 'Unknown',
+                        device: /Mobi|Android|iPhone/i.test(ua) ? 'mobile' : 'desktop',
+                        userAgent: ua
+                    })
+                });
+            } catch (e) {}
+        }
+
+        // Login function
+        async function login(email, password) {
+            const response = await fetch(`${SUPABASE_URL}/auth/v1/token?grant_type=password`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'apikey': SUPABASE_ANON_KEY
+                },
+                body: JSON.stringify({ email, password })
+            });
+
+            if (!response.ok) {
+                const error = await response.json();
+                throw new Error(error.error_description || 'Napaka pri prijavi');
+            }
+
+            return response.json();
+        }
+
+        // Initialize
+        async function init() {
+            await checkAuth();
+
+            const geoData = await getUserIP();
+            const isBlocked = await checkBlocked();
+
+            if (isBlocked) {
+                document.getElementById('loginForm').style.display = 'none';
+                document.getElementById('blockedMessage').style.display = 'block';
+                return;
+            }
+
+            // Notify about admin access attempt
+            await notifyAdminAccess(geoData);
+
+            // Handle form submission
+            document.getElementById('authForm').addEventListener('submit', async (e) => {
+                e.preventDefault();
+
+                const email = document.getElementById('email').value;
+                const password = document.getElementById('password').value;
+                const loginBtn = document.getElementById('loginBtn');
+                const errorMessage = document.getElementById('errorMessage');
+
+                loginBtn.disabled = true;
+                loginBtn.textContent = 'Prijavljam...';
+                errorMessage.style.display = 'none';
+
+                try {
+                    const data = await login(email, password);
+                    localStorage.setItem('admin_token', data.access_token);
+                    localStorage.setItem('admin_refresh_token', data.refresh_token);
+                    window.location.href = 'dashboard.html';
+                } catch (error) {
+                    errorMessage.textContent = error.message;
+                    errorMessage.style.display = 'block';
+                    loginBtn.disabled = false;
+                    loginBtn.textContent = 'Prijava';
+                }
+            });
+        }
+
+        init();
+    </script>
+</body>
+</html>
